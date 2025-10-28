@@ -128,41 +128,53 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>NO</th>
-                        <th>Nama</th>
+                        <th>ID Mahasiswa</th>
                         <th>NIM</th>
-                        <th>Foto</th>
+                        <th>Nama</th>
+                        <th>Kelas</th>
+                        <th>Jurusan</th>
+                        <th>Foto Wajah</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>1.</td>
-                        <td>Diky Sulisetyo</td>
+                        <td>001</td>
                         <td>3312411065</td>
+                        <td>Diky Sulisetyo</td>
+                        <td>TI-2A</td>
+                        <td>Teknik Informatika</td>
                         <td><i class="fa-solid fa-file foto-icon"></i></td>
                     </tr>
                     <tr>
-                        <td>2.</td>
-                        <td>Arief Rafi</td>
+                        <td>002</td>
                         <td>3312411080</td>
+                        <td>Arief Rafi</td>
+                        <td>TI-2A</td>
+                        <td>Teknik Informatika</td>
                         <td><i class="fa-solid fa-file foto-icon"></i></td>
                     </tr>
                     <tr>
-                        <td>3.</td>
-                        <td>Nafisah Nurul</td>
+                        <td>003</td>
                         <td>3312411057</td>
+                        <td>Nafisah Nurul</td>
+                        <td>TI-2B</td>
+                        <td>Teknik Informatika</td>
                         <td><i class="fa-solid fa-file foto-icon"></i></td>
                     </tr>
                     <tr>
-                        <td>4.</td>
-                        <td>Angelica Jolie</td>
+                        <td>004</td>
                         <td>3312411042</td>
+                        <td>Angelica Jolie</td>
+                        <td>TI-2B</td>
+                        <td>Teknik Informatika</td>
                         <td><i class="fa-solid fa-file foto-icon"></i></td>
                     </tr>
                     <tr>
-                        <td>5.</td>
-                        <td>Mahesa</td>
+                        <td>005</td>
                         <td>3312311119</td>
+                        <td>Mahesa</td>
+                        <td>TI-1A</td>
+                        <td>Teknik Informatika</td>
                         <td><i class="fa-solid fa-file foto-icon"></i></td>
                     </tr>
                 </tbody>
@@ -192,6 +204,17 @@
                             <input type="text" id="nama" class="form-control" required />
                             <label class="form-label" for="nama">Nama Lengkap</label>
                         </div>
+
+                        <div class="form-outline mb-4">
+                            <input type="text" id="kelas" class="form-control" required />
+                            <label class="form-label" for="kelas">Kelas</label>
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            <input type="text" id="jurusan" class="form-control" required />
+                            <label class="form-label" for="jurusan">Jurusan</label>
+                        </div>
+
                     </form>
                 </div>
 
@@ -202,38 +225,6 @@
             </div>
         </div>
     </div>
-
-    <!-- MODAL TAMBAH MAHASISWA 
-    <div class="modal fade" id="modalTambahMahasiswa" tabindex="-1" aria-labelledby="modalTambahMahasiswaLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-3">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahMahasiswaLabel">Tambah Mahasiswa</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form id="formTambahMahasiswa">
-                        <div class="form-outline mb-4">
-                            <input type="text" id="nim" class="form-control" required />
-                            <label class="form-label" for="nim">NIM</label>
-                        </div>
-
-                        <div class="form-outline mb-4">
-                            <input type="text" id="nama" class="form-control" required />
-                            <label class="form-label" for="nama">Nama Lengkap</label>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Batal</button>
-                    <button type="submit" form="formTambahMahasiswa" class="btn btn-primary">Simpan</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
 
     <!-- JS -->
     <script

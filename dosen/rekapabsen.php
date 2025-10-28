@@ -322,7 +322,7 @@
 
 <body>
     <!-- Sidebar & Navbar -->
-    <!-- <?php include 'navsideadmin.php'; ?> -->
+    <!-- <?php include 'navside.php'; ?> -->
 
     <!-- Konten Utama -->
     <div class="main-content">

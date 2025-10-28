@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Mahasiswa - RKM</title>
+    <title>Dashboard Dosen - RKM</title>
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
@@ -116,12 +116,6 @@
         <h4>Selamat Datang di Sistem RKM</h4>
 
         <div class="menu-container">
-            <div class="menu-card" onclick="location.href='registrasiface.php'">
-                <i class="fa-solid fa-camera"></i>
-                <h5>Registrasi Wajah</h5>
-                <p>Daftarkan wajah Anda untuk absensi otomatis.</p>
-            </div>
-
             <div class="menu-card" onclick="location.href='rekapabsen.php'">
                 <i class="fa-solid fa-list-check"></i>
                 <h5>Rekap Absensi</h5>

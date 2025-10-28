@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Mahasiswa - RKM</title>
+    <title>Dashboard Dosen - RKM</title>
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
@@ -60,7 +60,6 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -266,8 +265,6 @@
         <ul class="sidebar-menu">
             <li><a href="dashboard.php"><i class="fas fa-home"></i><span> Home</span></a></li>
             <hr>
-            <li><a href="registrasiface.php"><i class="fas fa-camera"></i><span> Registrasi Wajah</span></a></li>
-            <hr>
             <li><a href="rekapabsen.php"><i class="fas fa-clipboard-list"></i><span> Rekap Absen</span></a></li>
             <hr>
             <li><a href="login.php" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span> Logout</span></a></li>
@@ -279,11 +276,11 @@
         <div class="d-flex align-items-center gap-3">
             <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
             <div>
-                <h4>Selamat Datang, Mahasiswa</h4>
+                <h4>Selamat Datang, Dosen</h4>
                 <p id="datetime"></p>
             </div>
         </div>
-
+        
         <!-- User Dropdown -->
         <div class="user-dropdown">
             <i class="fa-solid fa-user fa-lg text-primary user-icon" id="userIcon"></i>
@@ -337,7 +334,7 @@
             }
         });
 
-        // Dropdown user toggle
+        // User Dropdown Toggle
         const userIcon = document.getElementById('userIcon');
         const userDropdown = document.getElementById('userDropdown');
 
@@ -346,6 +343,7 @@
             userDropdown.classList.toggle('show');
         });
 
+        // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
             if (!userIcon.contains(e.target) && !userDropdown.contains(e.target)) {
                 userDropdown.classList.remove('show');

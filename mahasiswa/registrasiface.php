@@ -14,101 +14,348 @@
 
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f6fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            min-height: 100vh;
         }
 
         .container {
-            margin-top: 120px;
-            max-width: 800px;
+            max-width: 900px;
+            margin: 0 auto;
             background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+        }
+
+        /* Header Section */
+        .header-section {
             text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
         }
 
-        h3 {
-            color: #0E2F80;
-            font-weight: 700;
-        }
-
-        p {
-            color: #555;
-            font-size: 15px;
-        }
-
-        #camera-container {
-            margin-top: 25px;
+        .header-section h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
             display: flex;
-            justify-content: center;
             align-items: center;
-            flex-direction: column;
-            gap: 15px;
+            justify-content: center;
+            gap: 12px;
         }
 
-        video,
-        canvas {
-            border-radius: 10px;
+        .header-section .subtitle {
+            color: #7f8c8d;
+            font-size: 15px;
+            margin: 0;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: #e0e0e0;
+            z-index: 0;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #95a5a6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .step.completed .step-circle {
+            background: #10b981;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 13px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Camera Section */
+        .camera-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .camera-wrapper {
+            position: relative;
+            max-width: 640px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        video, canvas {
             width: 100%;
-            max-width: 480px;
-            background-color: #000;
+            height: auto;
+            display: block;
+            border-radius: 12px;
         }
 
         #preview {
             display: none;
         }
 
-        .btn-custom {
-            background-color: #0E2F80;
-            color: #fff;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: 0.3s;
+        /* Face Detection Overlay */
+        .face-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            height: 350px;
+            border: 3px dashed rgba(102, 126, 234, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            display: none;
         }
 
-        .btn-custom:hover {
-            background-color: #0c2461;
-            transform: translateY(-2px);
+        .face-overlay.active {
+            display: block;
+            animation: pulse 2s infinite;
         }
 
-        .btn-back {
-            background-color: #6c757d;
-            color: #fff;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: 0.3s;
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
-        .btn-back:hover {
-            background-color: #5a6268;
-            transform: translateY(-2px);
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-
-        .info-box {
-            background-color: #eaf0ff;
-            border-left: 4px solid #0E2F80;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            text-align: left;
-            margin-top: 20px;
-            color: #333;
-        }
-
-        .back-container {
+        /* Status Messages */
+        .status-message {
             text-align: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status-message.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+            display: block;
+        }
+
+        .status-message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .status-message.warning {
+            background: #fff3e0;
+            color: #e65100;
+            border-left: 4px solid #e65100;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Guidelines */
+        .guidelines {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
             margin-top: 25px;
+        }
+
+        .guidelines h3 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guidelines ul {
+            margin: 0;
+            padding-left: 25px;
+            color: #555;
+        }
+
+        .guidelines li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Navigation */
+        .navigation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 20px;
+            }
+
+            .header-section h1 {
+                font-size: 22px;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .progress-steps::before {
+                display: none;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner.active {
+            display: block;
         }
     </style>
 </head>
@@ -116,32 +363,81 @@
 <body>
 
     <div class="container">
-        <h3><i class="fas fa-camera"></i> Registrasi Wajah Mahasiswa</h3>
-        <p>Pastikan wajah Anda terlihat jelas di depan kamera untuk proses registrasi.</p>
-
-        <div id="camera-container">
-            <video id="video" autoplay></video>
-            <canvas id="preview"></canvas>
+        <!-- Header -->
+        <div class="header-section">
+            <h1>
+                <i class="fas fa-user-circle"></i>
+                Registrasi Wajah Mahasiswa
+            </h1>
+            <p class="subtitle">Sistem Absensi Berbasis Pengenalan Wajah</p>
         </div>
 
-        <div class="button-group">
-            <button id="startBtn" class="btn btn-custom"><i class="fa-solid fa-play"></i> Mulai Kamera</button>
-            <button id="captureBtn" class="btn btn-custom" disabled><i class="fa-solid fa-camera"></i> Ambil Gambar</button>
-            <button id="saveBtn" class="btn btn-success" disabled><i class="fa-solid fa-check"></i> Simpan Registrasi</button>
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <div class="step active" id="step1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Aktifkan Kamera</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Ambil Foto</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Konfirmasi</div>
+            </div>
         </div>
 
-        <div class="info-box">
-            <strong>Tips:</strong>
-            <ul style="margin: 8px 0 0 20px;">
-                <li>Pastikan pencahayaan cukup dan wajah menghadap kamera.</li>
-                <li>Hindari penggunaan masker atau kacamata gelap.</li>
-                <li>Registrasi wajah ini akan digunakan untuk sistem absensi otomatis.</li>
+        <!-- Status Message -->
+        <div class="status-message info" id="statusMsg">
+            <i class="fas fa-info-circle"></i> Klik tombol "Aktifkan Kamera" untuk memulai proses registrasi
+        </div>
+
+        <!-- Camera Section -->
+        <div class="camera-section">
+            <div class="camera-wrapper">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="preview" width="640" height="480"></canvas>
+                <div class="face-overlay" id="faceOverlay"></div>
+            </div>
+            <div class="spinner" id="loadingSpinner"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button id="startBtn" class="btn btn-primary">
+                <i class="fas fa-video"></i> Aktifkan Kamera
+            </button>
+            <button id="captureBtn" class="btn btn-primary" disabled>
+                <i class="fas fa-camera"></i> Ambil Foto
+            </button>
+            <button id="retakeBtn" class="btn btn-outline" style="display: none;">
+                <i class="fas fa-redo"></i> Ambil Ulang
+            </button>
+            <button id="saveBtn" class="btn btn-success" disabled>
+                <i class="fas fa-check-circle"></i> Simpan & Daftar
+            </button>
+        </div>
+
+        <!-- Guidelines -->
+        <div class="guidelines">
+            <h3>
+                <i class="fas fa-lightbulb"></i> Panduan Registrasi
+            </h3>
+            <ul>
+                <li><strong>Pencahayaan:</strong> Pastikan ruangan memiliki pencahayaan yang cukup dan wajah Anda tidak terlalu gelap atau terang</li>
+                <li><strong>Posisi Wajah:</strong> Posisikan wajah tepat di tengah kamera dan hadap langsung ke depan</li>
+                <li><strong>Jarak:</strong> Jaga jarak sekitar 30-50 cm dari kamera untuk hasil optimal</li>
+                <li><strong>Aksesoris:</strong> Lepas masker, kacamata hitam, atau topi yang menutupi wajah</li>
+                <li><strong>Ekspresi:</strong> Gunakan ekspresi wajah netral dan pastikan mata terlihat jelas</li>
             </ul>
         </div>
 
-        <!-- Tombol Kembali -->
-        <div class="back-container">
-            <a href="navside.php" class="btn btn-back"><i class="fa-solid fa-arrow-left"></i> Kembali ke Rekap Absensi</a>
+        <!-- Navigation -->
+        <div class="navigation">
+            <a href="dashboard.php" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+            </a>
         </div>
     </div>
 
@@ -151,34 +447,135 @@
         const canvas = document.getElementById('preview');
         const startBtn = document.getElementById('startBtn');
         const captureBtn = document.getElementById('captureBtn');
+        const retakeBtn = document.getElementById('retakeBtn');
         const saveBtn = document.getElementById('saveBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        const faceOverlay = document.getElementById('faceOverlay');
+        const loadingSpinner = document.getElementById('loadingSpinner');
         const context = canvas.getContext('2d');
         let stream;
 
-        // Mulai kamera
+        // Update status message
+        function updateStatus(message, type = 'info') {
+            statusMsg.className = `status-message ${type}`;
+            statusMsg.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+            statusMsg.style.display = 'block';
+        }
+
+        // Update progress steps
+        function updateStep(stepNumber) {
+            document.querySelectorAll('.step').forEach((step, index) => {
+                if (index < stepNumber - 1) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else if (index === stepNumber - 1) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        // Start camera
         startBtn.addEventListener('click', async () => {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                loadingSpinner.classList.add('active');
+                updateStatus('Mengakses kamera...', 'info');
+                
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: 'user'
+                    } 
+                });
+                
                 video.srcObject = stream;
+                video.style.display = 'block';
+                canvas.style.display = 'none';
+                faceOverlay.classList.add('active');
+                
+                startBtn.disabled = true;
                 captureBtn.disabled = false;
+                retakeBtn.style.display = 'none';
+                saveBtn.disabled = true;
+                
+                loadingSpinner.classList.remove('active');
+                updateStatus('Kamera aktif! Posisikan wajah Anda di dalam area oval dan klik "Ambil Foto"', 'success');
+                updateStep(2);
+                
             } catch (err) {
-                alert('Gagal mengakses kamera. Pastikan izin kamera diaktifkan.');
-                console.error(err);
+                loadingSpinner.classList.remove('active');
+                updateStatus('Gagal mengakses kamera. Pastikan Anda telah memberikan izin akses kamera.', 'warning');
+                console.error('Camera error:', err);
             }
         });
 
-        // Ambil gambar dari video
+        // Capture photo
         captureBtn.addEventListener('click', () => {
-            canvas.style.display = 'block';
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            video.style.display = 'none';
+            canvas.style.display = 'block';
+            faceOverlay.classList.remove('active');
+            
+            captureBtn.disabled = true;
+            retakeBtn.style.display = 'inline-flex';
             saveBtn.disabled = false;
+            
+            updateStatus('Foto berhasil diambil! Periksa hasil foto dan klik "Simpan & Daftar" jika sudah sesuai', 'success');
+            updateStep(3);
         });
 
-        // Simpan hasil registrasi (simulasi)
+        // Retake photo
+        retakeBtn.addEventListener('click', () => {
+            video.style.display = 'block';
+            canvas.style.display = 'none';
+            faceOverlay.classList.add('active');
+            
+            captureBtn.disabled = false;
+            retakeBtn.style.display = 'none';
+            saveBtn.disabled = true;
+            
+            updateStatus('Silakan ambil foto ulang. Posisikan wajah Anda dengan baik', 'info');
+            updateStep(2);
+        });
+
+        // Save registration
         saveBtn.addEventListener('click', () => {
+            loadingSpinner.classList.add('active');
+            updateStatus('Menyimpan data registrasi...', 'info');
+            
             const imageData = canvas.toDataURL('image/png');
-            alert('Wajah berhasil diregistrasi!');
-            console.log('Data gambar:', imageData);
+            
+            // Simulate saving process
+            setTimeout(() => {
+                loadingSpinner.classList.remove('active');
+                updateStatus('Registrasi wajah berhasil disimpan! Anda akan dialihkan ke dashboard...', 'success');
+                
+                // Stop camera
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+                
+                console.log('Image data saved:', imageData);
+                
+                // Redirect after 2 seconds
+                setTimeout(() => {
+                    // window.location.href = 'dashboard.php';
+                    alert('Registrasi berhasil! (Demo mode - redirect dinonaktifkan)');
+                }, 2000);
+            }, 1500);
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
         });
     </script>
 

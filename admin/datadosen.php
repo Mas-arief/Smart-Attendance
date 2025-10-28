@@ -2,19 +2,15 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Data Dosen - Admin Polibatam</title>
 
     <!-- Font Awesome -->
-    <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 
     <!-- MDB UI Kit -->
-    <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.min.css"
-        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.min.css" rel="stylesheet" />
 
     <style>
         body {
@@ -26,9 +22,7 @@
         /* Konten utama di kanan */
         .content {
             margin-left: 230px;
-            /* menyesuaikan lebar sidebar */
             margin-top: 90px;
-            /* menyesuaikan tinggi navbar */
             padding: 30px;
             transition: 0.3s;
         }
@@ -116,7 +110,6 @@
     <!-- Sidebar & Navbar -->
     <?php include 'navsideadmin.php'; ?>
 
-
     <!-- Konten utama -->
     <div class="content">
         <div class="table-container">
@@ -128,49 +121,47 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>NO</th>
-                        <th>Nama</th>
+                        <th>ID Dosen</th>
                         <th>NIK</th>
-                        <th>Foto</th>
+                        <th>Nama</th>
+                        <th>Email</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>1.</td>
+                        <td>DSN001</td>
+                        <td>197812092002121001</td>
                         <td>Diky Sulisetyo</td>
-                        <td>123454146</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
+                        <td>diky@polibatam.ac.id</td>
                     </tr>
                     <tr>
-                        <td>2.</td>
+                        <td>DSN002</td>
+                        <td>198503172005041002</td>
                         <td>Arief Rafi</td>
-                        <td>36789240</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
+                        <td>arief@polibatam.ac.id</td>
                     </tr>
                     <tr>
-                        <td>3.</td>
+                        <td>DSN003</td>
+                        <td>198910222008122003</td>
                         <td>Nafisah Nurul</td>
-                        <td>34790734</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
+                        <td>nafisah@polibatam.ac.id</td>
                     </tr>
                     <tr>
-                        <td>4.</td>
+                        <td>DSN004</td>
+                        <td>199205192015032004</td>
                         <td>Angelica Jolie</td>
-                        <td>33124110</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
+                        <td>angelica@polibatam.ac.id</td>
                     </tr>
                     <tr>
-                        <td>5.</td>
+                        <td>DSN005</td>
+                        <td>198806272010062005</td>
                         <td>Mahesa</td>
-                        <td>12311119</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
+                        <td>mahesa@polibatam.ac.id</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-
-
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -192,6 +183,11 @@
                             <input type="text" id="nama" class="form-control" required />
                             <label class="form-label" for="nama">Nama Lengkap</label>
                         </div>
+
+                        <div class="form-outline mb-4">
+                            <input type="text" id="email" class="form-control" required />
+                            <label class="form-label" for="email">Email</label>
+                        </div>
                     </form>
                 </div>
 
@@ -203,42 +199,8 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH Dosen 
-    <div class="modal fade" id="modalTambahDosen" tabindex="-1" aria-labelledby="modalTambahDosenLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-3">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahDosenLabel">Tambah Dosen</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form id="formTambahDosen">
-                        <div class="form-outline mb-4">
-                            <input type="text" id="nim" class="form-control" required />
-                            <label class="form-label" for="nim">NIM</label>
-                        </div>
-
-                        <div class="form-outline mb-4">
-                            <input type="text" id="nama" class="form-control" required />
-                            <label class="form-label" for="nama">Nama Lengkap</label>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Batal</button>
-                    <button type="submit" form="formTambahDosen" class="btn btn-primary">Simpan</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
     <!-- JS -->
-    <script
-        type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.umd.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.umd.min.js"></script>
 </body>
 
 </html>
