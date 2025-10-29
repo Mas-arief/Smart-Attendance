@@ -60,6 +60,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -263,11 +264,9 @@
         </div>
 
         <ul class="sidebar-menu">
-            <li><a href="dashboard.php"><i class="fas fa-home"></i><span> Home</span></a></li>
+            <li><a href="dashboard.php"><i class="fas fa-home"></i><span> Beranda</span></a></li>
             <hr>
             <li><a href="rekapabsen.php"><i class="fas fa-clipboard-list"></i><span> Rekap Absen</span></a></li>
-            <hr>
-            <li><a href="login.php" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span> Logout</span></a></li>
         </ul>
     </div>
 
@@ -280,7 +279,7 @@
                 <p id="datetime"></p>
             </div>
         </div>
-        
+
         <!-- User Dropdown -->
         <div class="user-dropdown">
             <i class="fa-solid fa-user fa-lg text-primary user-icon" id="userIcon"></i>
@@ -289,6 +288,7 @@
                     <i class="fas fa-key"></i>
                     <span>Ganti Password</span>
                 </a>
+                <a href="../login.php" id="logoutBtn" class="dropdown-item-custom"><i class="fas fa-sign-out-alt"></i><span> Logout</span></a>
             </div>
         </div>
     </div>
@@ -328,9 +328,9 @@
         // Konfirmasi Logout
         document.getElementById('logoutBtn').addEventListener('click', (e) => {
             e.preventDefault();
-            const confirmLogout = confirm('Apakah Anda yakin ingin keluar dari akun mahasiswa?');
+            const confirmLogout = confirm('Apakah Anda yakin ingin keluar dari akun dosen?');
             if (confirmLogout) {
-                window.location.href = 'login.php';
+                window.location.href = '../login.php';
             }
         });
 

@@ -216,7 +216,7 @@
 
 
     <ul class="sidebar-menu">
-      <li><a href="dashboardadmin.php"><i class="fas fa-home"></i><span> Dashboard</span></a></li>
+      <li><a href="dashboardadmin.php"><i class="fas fa-home"></i><span> Beranda</span></a></li>
       <hr>
       <li><a href="datamahasiswa.php"><i class="fas fa-user-graduate"></i><span> Data Mahasiswa</span></a></li>
       <hr>
@@ -224,7 +224,7 @@
       <hr>
       <li><a href="rekapabsen.php"><i class="fas fa-list-check"></i><span> Rekap Kehadiran</span></a></li>
       <hr>
-      <li><a href="aturabsen.php"><i class="fas fa-cog"></i><span> Setting Absensi</span></a></li>
+      <li><a href="aturabsen.php"><i class="fas fa-cog"></i><span>Atur Absensi</span></a></li>
       <hr>
       <!-- Tombol logout dengan konfirmasi -->
       <li><a href="login.php" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span> Logout</span></a></li>
