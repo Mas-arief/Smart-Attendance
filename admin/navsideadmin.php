@@ -56,14 +56,28 @@
       transition: all 0.3s ease;
     }
 
-    .sidebar.collapsed .sidebar-header h5 {
-      display: none;
-    }
-
     .sidebar-header img {
       height: 45px;
       margin-right: 10px;
       transition: all 0.3s ease;
+    }
+
+    .sidebar-title h5 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .sidebar-title p {
+      margin: 0;
+      font-size: 12px;
+      color: #dcdcdc;
+      letter-spacing: 0.3px;
+    }
+
+    .sidebar.collapsed .sidebar-title {
+      display: none;
     }
 
     .sidebar-menu {
@@ -148,6 +162,29 @@
       color: #666;
     }
 
+    .nav-icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-icons i {
+      font-size: 20px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .nav-icons i:hover {
+      color: #0E2F80;
+    }
+
+    .logout-icon {
+      color: #0E2F80;
+    }
+
+    .logout-icon:hover {
+      color: #0E2F80;
+    }
 
     /* Responsif */
     @media (max-width: 991px) {
@@ -167,39 +204,6 @@
         left: 0;
       }
     }
-
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      width: 100%;
-      margin-bottom: 30px;
-      transition: all 0.3s ease;
-    }
-
-    .sidebar-header img {
-      height: 45px;
-      margin-right: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .sidebar-title h5 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .sidebar-title p {
-      margin: 0;
-      font-size: 12px;
-      color: #dcdcdc;
-      letter-spacing: 0.3px;
-    }
-
-    .sidebar.collapsed .sidebar-title {
-      display: none;
-    }
   </style>
 </head>
 
@@ -214,7 +218,6 @@
       </div>
     </div>
 
-
     <ul class="sidebar-menu">
       <li><a href="dashboardadmin.php"><i class="fas fa-home"></i><span> Beranda</span></a></li>
       <hr>
@@ -224,10 +227,7 @@
       <hr>
       <li><a href="rekapabsen.php"><i class="fas fa-list-check"></i><span> Rekap Kehadiran</span></a></li>
       <hr>
-      <li><a href="aturabsen.php"><i class="fas fa-cog"></i><span>Atur Absensi</span></a></li>
-      <hr>
-      <!-- Tombol logout dengan konfirmasi -->
-      <li><a href="login.php" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span> Logout</span></a></li>
+      <li><a href="aturabsen.php"><i class="fas fa-cog"></i><span> Atur Absensi</span></a></li>
     </ul>
   </div>
 
@@ -240,7 +240,12 @@
         <p id="datetime"></p>
       </div>
     </div>
-    <i class="fa-solid fa-user fa-lg text-primary"></i>
+
+    <!-- ikon profil + logout -->
+    <div class="nav-icons">
+      <i class="fa-solid fa-user text-primary" title="Profil"></i>
+      <i class="fa-solid fa-right-from-bracket logout-icon" id="logoutBtn" title="Logout"></i>
+    </div>
   </div>
 
   <!-- Script -->
@@ -268,18 +273,15 @@
     // Sidebar toggle
     const sidebar = document.getElementById('sidebar');
     const navbar = document.getElementById('navbar');
-    const main = document.getElementById('main');
     const toggleBtn = document.getElementById('menu-toggle');
 
     toggleBtn.addEventListener('click', () => {
       sidebar.classList.toggle('collapsed');
       navbar.classList.toggle('collapsed');
-      main.classList.toggle('collapsed');
     });
 
     // Konfirmasi Logout
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-      e.preventDefault();
+    document.getElementById('logoutBtn').addEventListener('click', () => {
       const confirmLogout = confirm('Apakah Anda yakin ingin logout dari akun admin?');
       if (confirmLogout) {
         window.location.href = 'login.php';
