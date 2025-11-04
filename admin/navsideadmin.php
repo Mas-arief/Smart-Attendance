@@ -53,7 +53,6 @@
       justify-content: flex-start;
       width: 100%;
       margin-bottom: 30px;
-      transition: all 0.3s ease;
     }
 
     .sidebar-header img {
@@ -84,12 +83,10 @@
       list-style: none;
       padding: 0;
       width: 100%;
-      transition: all 0.3s ease;
     }
 
     .sidebar-menu li {
       width: 100%;
-      text-align: left;
     }
 
     .sidebar-menu a {
@@ -168,22 +165,20 @@
       gap: 20px;
     }
 
-    .nav-icons i {
-      font-size: 20px;
+    .logout-btn {
+      background-color: #0E2F80;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: color 0.3s ease;
+      font-size: 14px;
+      font-weight: 500;
+      transition: 0.3s;
     }
 
-    .nav-icons i:hover {
-      color: #0E2F80;
-    }
-
-    .logout-icon {
-      color: #0E2F80;
-    }
-
-    .logout-icon:hover {
-      color: #0E2F80;
+    .logout-btn:hover {
+      background-color: #0b2362;
     }
 
     /* Responsif */
@@ -236,15 +231,15 @@
     <div class="d-flex align-items-center gap-3">
       <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
       <div>
-        <h4>Selamat Datang, Admin Polibatam</h4>
+        <h4>Selamat Datang, <?php echo $_SESSION['nama']; ?> </h4>
         <p id="datetime"></p>
       </div>
     </div>
 
-    <!-- ikon profil + logout -->
     <div class="nav-icons">
-      <i class="fa-solid fa-user text-primary" title="Profil"></i>
-      <i class="fa-solid fa-right-from-bracket logout-icon" id="logoutBtn" title="Logout"></i>
+      <button class="logout-btn" id="logoutBtn">
+        <i class="fas fa-right-from-bracket me-1"></i> Logout
+      </button>
     </div>
   </div>
 
@@ -284,7 +279,7 @@
     document.getElementById('logoutBtn').addEventListener('click', () => {
       const confirmLogout = confirm('Apakah Anda yakin ingin logout dari akun admin?');
       if (confirmLogout) {
-        window.location.href = 'login.php';
+        window.location.href = '../logout.php';
       }
     });
   </script>

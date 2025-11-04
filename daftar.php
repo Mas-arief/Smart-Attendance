@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -5,17 +6,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registrasi - Polibatam</title>
-
-  <!-- Font Awesome -->
+  <!-- ... (link CSS dan Font sama seperti sebelumnya) ... -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-  <!-- MDB UI Kit -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.min.css" rel="stylesheet" />
-
   <style>
+    /* ... (style sama seperti sebelumnya) ... */
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #3B4BAF;
@@ -96,22 +92,40 @@
         <div class="col-11 col-md-8 col-lg-5">
           <div class="card">
             <div class="card-body text-center">
-              <img src="../rkm/image/poltek.png" alt="Logo Polibatam">
+              <img src="rkm/image/poltek.png" alt="Logo Polibatam">
               <h4>Registrasi</h4>
 
-              <form>
+              <!-- Tampilkan Pesan Error atau Sukses -->
+              <?php if (isset($_SESSION['error'])): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <?php echo $_SESSION['error'];
+                  unset($_SESSION['error']); ?>
+                  <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
+                </div>
+              <?php endif; ?>
+
+              <form action="proses_daftar.php" method="POST">
                 <div class="form-outline mb-4">
-                  <input type="text" id="username" class="form-control form-control-lg" required />
-                  <label class="form-label" for="username">Username</label>
+                  <select class="form-select form-select-lg" id="role" name="role" required>
+                    <option value="" selected disabled>Pilih Sebagai</option>
+                    <option value="dosen">Dosen</option>
+                    <option value="mahasiswa">Mahasiswa</option>
+                  </select>
+                  <label class="form-label" for="role">Daftar Sebagai</label>
                 </div>
 
                 <div class="form-outline mb-4">
-                  <input type="password" id="password" class="form-control form-control-lg" required />
+                  <input type="text" id="nik_nim" name="nik_nim" class="form-control form-control-lg" required />
+                  <label class="form-label" for="nik_nim">NIK / NIM</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input type="password" id="password" name="password" class="form-control form-control-lg" required />
                   <label class="form-label" for="password">Password</label>
                 </div>
 
                 <div class="form-outline mb-4">
-                  <input type="password" id="confirmPassword" class="form-control form-control-lg" required />
+                  <input type="password" id="confirmPassword" name="confirm_password" class="form-control form-control-lg" required />
                   <label class="form-label" for="confirmPassword">Konfirmasi Password</label>
                 </div>
 
@@ -130,7 +144,6 @@
     </div>
   </section>
 
-  <!-- MDB -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.umd.min.js"></script>
 </body>
 
