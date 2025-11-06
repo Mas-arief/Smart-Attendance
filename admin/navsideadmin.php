@@ -227,11 +227,12 @@
   </div>
 
   <!-- Navbar -->
+  <!-- Navbar -->
   <div class="navbar" id="navbar">
     <div class="d-flex align-items-center gap-3">
       <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
       <div>
-        <h4>Selamat Datang, <?php echo $_SESSION['nama']; ?> </h4>
+        <h4>Selamat Datang, Admin</h4>
         <p id="datetime"></p>
       </div>
     </div>

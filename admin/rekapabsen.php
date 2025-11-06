@@ -460,8 +460,7 @@
             mhs1: {
                 nim: '2301010001',
                 nama: 'Ahmad Rizki Pratama',
-                courses: [
-                    {
+                courses: [{
                         kode: 'IF101',
                         matkul: 'Pengantar Proyek Perangkat Lunak',
                         jenis: 'TEORI & PRAKTIKUM',
@@ -484,8 +483,7 @@
             mhs2: {
                 nim: '2301010002',
                 nama: 'Siti Nurhaliza',
-                courses: [
-                    {
+                courses: [{
                         kode: 'IF101',
                         matkul: 'Pengantar Proyek Perangkat Lunak',
                         jenis: 'TEORI & PRAKTIKUM',
@@ -537,7 +535,10 @@
         }
 
         function calculateStatistics(courses) {
-            let totalHadir = 0, totalIzin = 0, totalSakit = 0, totalAlfa = 0;
+            let totalHadir = 0,
+                totalIzin = 0,
+                totalSakit = 0,
+                totalAlfa = 0;
             let totalPertemuan = 0;
 
             courses.forEach(course => {
@@ -582,7 +583,7 @@
                         'Izin': 'fa-info',
                         'Sakit': 'fa-notes-medical',
                         'Alfa': 'fa-xmark'
-                    }[status];
+                    } [status];
                     html += `<td><span class="status ${statusClass}"><i class="fa-solid ${icon}"></i> ${status}</span></td>`;
                 });
 

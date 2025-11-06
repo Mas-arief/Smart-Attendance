@@ -1,235 +1,278 @@
+<?php
+session_start();
+include '../koneksi.php';
+
+// Ambil data mahasiswa
+$result = $conn->query("SELECT * FROM mahasiswa ORDER BY id_mahasiswa ASC");
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Mahasiswa - Admin Polibatam</title>
+    <title>Data Mahasiswa - Admin</title>
 
-    <!-- Font Awesome -->
-    <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        rel="stylesheet" />
-
-    <!-- MDB UI Kit -->
-    <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.min.css"
-        rel="stylesheet" />
+    <!-- Bootstrap & Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <style>
         body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
             background-color: #f7f7f7;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            display: flex;
         }
 
-        /* Konten utama di kanan */
-        .content {
-            margin-left: 230px;
-            /* menyesuaikan lebar sidebar */
-            margin-top: 90px;
-            /* menyesuaikan tinggi navbar */
-            padding: 30px;
-            transition: 0.3s;
+        /* area utama konten (selain nav kiri) */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            /* lebar sidebar */
+            padding: 100px 40px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Container tabel */
-        .table-container {
-            background-color: #ffffff;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
+        .content-wrapper {
+            background-color: #fff;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1100px;
+            padding: 25px 35px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         h3 {
+            font-weight: 600;
             color: #0E2F80;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .table th {
+            color: #0E2F80;
+            background-color: #f2f5ff;
             font-weight: 600;
-            margin-bottom: 25px;
+            text-align: center;
+            vertical-align: middle;
         }
 
-        /* Tabel */
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 25px;
-            border-radius: 10px;
-            overflow: hidden;
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+            font-size: 12px;
         }
 
-        thead tr {
-            background-color: #eaeaea;
+        .table-hover tbody tr:hover {
+            background-color: #f9fbff;
         }
 
-        th,
-        td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #ddd;
-            color: #333;
-        }
-
-        th {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 14px;
-        }
-
-        td {
-            font-size: 15px;
-        }
-
-        tr:hover {
-            background-color: #f9f9f9;
-        }
-
-        .foto-icon {
-            font-size: 20px;
-            color: #000;
+        .btn-action {
+            border: none;
+            background: none;
+            padding: 4px 8px;
             cursor: pointer;
-            transition: 0.2s;
         }
 
-        .foto-icon:hover {
-            color: #0E2F80;
-            transform: scale(1.15);
+        .btn-edit {
+            color: #ffc107;
         }
 
-        /* Responsif */
-        @media (max-width: 991px) {
-            .content {
+        .btn-delete {
+            color: #dc3545;
+        }
+
+        /* tombol tambah di bawah tabel */
+        .btn-tambah {
+            background-color: #0E2F80;
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 500;
+            box-shadow: 0 3px 5px rgba(14, 47, 128, 0.2);
+            margin-top: 25px;
+        }
+
+        .btn-tambah:hover {
+            background-color: #173a9b;
+        }
+
+        /* gaya modal */
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            background-color: #0E2F80;
+            color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .form-label {
+            font-weight: 500;
+        }
+
+        /* responsif */
+        @media (max-width: 768px) {
+            .main-content {
                 margin-left: 0;
-                margin-top: 120px;
-                padding: 20px;
+                padding: 80px 20px;
             }
 
-            .table-container {
-                max-width: 100%;
-                margin: 10px;
+            .content-wrapper {
+                padding: 20px;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Sidebar & Navbar -->
     <?php include 'navsideadmin.php'; ?>
 
+    <div class="main-content">
+        <div class="content-wrapper">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="m-0">Daftar Mahasiswa</h3>
+                <button class="btn-tambah" data-bs-toggle="modal" data-bs-target="#tambahModal">
+                    <i class="fa-solid fa-plus"></i> Tambah Mahasiswa
+                </button>
+            </div>
 
-    <!-- Konten utama -->
-    <div class="content">
-        <div class="table-container">
-            <h3>Daftar Mahasiswa</h3>
-            <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#exampleModal">
-                <i class="fa-solid fa-plus"></i> Tambah Mahasiswa
-            </button>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NIM</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Jurusan</th>
+                            <th>Angkatan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($result->num_rows > 0): ?>
+                            <?php while ($row = $result->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['id_mahasiswa']); ?></td>
+                                    <td><?= htmlspecialchars($row['nim']); ?></td>
+                                    <td><?= htmlspecialchars($row['nama_mahasiswa']); ?></td>
+                                    <td><?= htmlspecialchars($row['email']); ?></td>
+                                    <td><?= htmlspecialchars($row['jurusan']); ?></td>
+                                    <td><?= htmlspecialchars($row['angkatan']); ?></td>
+                                    <td>
+                                        <button class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editModal<?= $row['id_mahasiswa']; ?>">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                        <form action="hapus_mahasiswa.php" method="POST" style="display:inline;">
+                                            <input type="hidden" name="id_mahasiswa" value="<?= $row['id_mahasiswa']; ?>">
+                                            <button type="submit" class="btn-action btn-delete" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID Mahasiswa</th>
-                        <th>NIM</th>
-                        <th>Nama</th>
-                        <th>Kelas</th>
-                        <th>Jurusan</th>
-                        <th>Foto Wajah</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>001</td>
-                        <td>3312411065</td>
-                        <td>Diky Sulisetyo</td>
-                        <td>TI-2A</td>
-                        <td>Teknik Informatika</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
-                    </tr>
-                    <tr>
-                        <td>002</td>
-                        <td>3312411080</td>
-                        <td>Arief Rafi</td>
-                        <td>TI-2A</td>
-                        <td>Teknik Informatika</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
-                    </tr>
-                    <tr>
-                        <td>003</td>
-                        <td>3312411057</td>
-                        <td>Nafisah Nurul</td>
-                        <td>TI-2B</td>
-                        <td>Teknik Informatika</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
-                    </tr>
-                    <tr>
-                        <td>004</td>
-                        <td>3312411042</td>
-                        <td>Angelica Jolie</td>
-                        <td>TI-2B</td>
-                        <td>Teknik Informatika</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
-                    </tr>
-                    <tr>
-                        <td>005</td>
-                        <td>3312311119</td>
-                        <td>Mahesa</td>
-                        <td>TI-1A</td>
-                        <td>Teknik Informatika</td>
-                        <td><i class="fa-solid fa-file foto-icon"></i></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-3">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahMahasiswaLabel">Tambah Mahasiswa</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form id="formTambahMahasiswa">
-                        <div class="form-outline mb-4">
-                            <input type="text" id="nim" class="form-control" required />
-                            <label class="form-label" for="nim">NIM</label>
-                        </div>
-
-                        <div class="form-outline mb-4">
-                            <input type="text" id="nama" class="form-control" required />
-                            <label class="form-label" for="nama">Nama Lengkap</label>
-                        </div>
-
-                        <div class="form-outline mb-4">
-                            <input type="text" id="kelas" class="form-control" required />
-                            <label class="form-label" for="kelas">Kelas</label>
-                        </div>
-
-                        <div class="form-outline mb-4">
-                            <input type="text" id="jurusan" class="form-control" required />
-                            <label class="form-label" for="jurusan">Jurusan</label>
-                        </div>
-
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Batal</button>
-                    <button type="submit" form="formTambahMahasiswa" class="btn btn-primary">Simpan</button>
-                </div>
+                                <!-- Modal Edit -->
+                                <div class="modal fade" id="editModal<?= $row['id_mahasiswa']; ?>" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Mahasiswa</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form action="edit_mahasiswa.php" method="POST">
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="id_mahasiswa" value="<?= $row['id_mahasiswa']; ?>">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">NIM</label>
+                                                        <input type="text" name="nim" class="form-control" value="<?= $row['nim']; ?>" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Nama Lengkap</label>
+                                                        <input type="text" name="nama_mahasiswa" class="form-control" value="<?= $row['nama_mahasiswa']; ?>" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Email</label>
+                                                        <input type="email" name="email" class="form-control" value="<?= $row['email']; ?>" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Jurusan</label>
+                                                        <input type="text" name="jurusan" class="form-control" value="<?= $row['jurusan']; ?>" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Angkatan</label>
+                                                        <input type="text" name="angkatan" class="form-control" value="<?= $row['angkatan']; ?>" required>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary w-100">Simpan Perubahan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Belum ada data mahasiswa</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- JS -->
-    <script
-        type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.umd.min.js"></script>
+    <!-- Modal Tambah -->
+    <div class="modal fade" id="tambahModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Mahasiswa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="tambah_mahasiswa.php" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">NIM</label>
+                            <input type="text" name="nim" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" name="nama_mahasiswa" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Jurusan</label>
+                            <input type="text" name="jurusan" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Angkatan</label>
+                            <input type="text" name="angkatan" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary w-100">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
+<?php $conn->close(); ?>

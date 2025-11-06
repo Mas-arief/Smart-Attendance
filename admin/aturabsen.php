@@ -85,6 +85,12 @@
       transform: scale(1.15);
     }
 
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+
     @media (max-width: 991px) {
       .content {
         margin-left: 0;
@@ -107,7 +113,7 @@
   <div class="content">
     <div class="table-container">
       <h3>Jadwal Ruangan</h3>
-      <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#jadwalModal">
+      <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#jadwalModal" onclick="resetForm()">
         <i class="fa-solid fa-plus"></i> Tambah Jadwal
       </button>
 
@@ -122,27 +128,10 @@
             <th>Aksi</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tableBody">
           <tr>
-            <td>1.</td>
-            <td>GU 702</td>
-            <td>Basis Data</td>
-            <td>19.00</td>
-            <td>20.30</td>
-            <td class="action-icons">
-              <i class="fa-solid fa-pen-to-square edit-btn"></i>
-              <i class="fa-solid fa-circle-xmark delete-btn"></i>
-            </td>
-          </tr>
-          <tr>
-            <td>2.</td>
-            <td>GU 806</td>
-            <td>Proyek Agile</td>
-            <td>18.30</td>
-            <td>20.20</td>
-            <td class="action-icons">
-              <i class="fa-solid fa-pen-to-square edit-btn"></i>
-              <i class="fa-solid fa-circle-xmark delete-btn"></i>
+            <td colspan="6" class="loading">
+              <i class="fas fa-spinner fa-spin"></i> Memuat data...
             </td>
           </tr>
         </tbody>
@@ -161,20 +150,27 @@
 
         <div class="modal-body">
           <form id="formJadwal">
-            <div class="form-outline mb-3">
-              <input type="text" id="ruangan" class="form-control" required />
+            <input type="hidden" id="jadwalId" value="">
+
+            <div class="form-outline mb-4">
+              <select class="form-select" id="ruangan" required>
+                <option value="">Pilih Ruangan</option>
+              </select>
               <label class="form-label" for="ruangan">Ruangan</label>
             </div>
-            <div class="form-outline mb-3">
+
+            <div class="form-outline mb-4">
               <input type="text" id="matkul" class="form-control" required />
               <label class="form-label" for="matkul">Mata Kuliah</label>
             </div>
-            <div class="form-outline mb-3">
-              <input type="text" id="jamMasuk" class="form-control" required />
+
+            <div class="form-outline mb-4">
+              <input type="time" id="jamMasuk" class="form-control" required />
               <label class="form-label" for="jamMasuk">Jam Masuk</label>
             </div>
-            <div class="form-outline mb-3">
-              <input type="text" id="jamKeluar" class="form-control" required />
+
+            <div class="form-outline mb-4">
+              <input type="time" id="jamKeluar" class="form-control" required />
               <label class="form-label" for="jamKeluar">Jam Keluar</label>
             </div>
           </form>
@@ -182,7 +178,9 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Batal</button>
-          <button type="submit" form="formJadwal" class="btn btn-primary" id="saveBtn">Simpan</button>
+          <button type="submit" form="formJadwal" class="btn btn-primary" id="saveBtn">
+            <i class="fas fa-save"></i> Simpan
+          </button>
         </div>
       </div>
     </div>
@@ -193,77 +191,194 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
 
   <script>
-    const tableBody = document.querySelector("#jadwalTable tbody");
+    const API_URL = 'jadwal_api.php';
+    const tableBody = document.getElementById("tableBody");
     const form = document.getElementById("formJadwal");
     const modalTitle = document.getElementById("jadwalModalLabel");
-    let editRow = null;
+    const jadwalModal = document.getElementById("jadwalModal");
+    let modalInstance;
 
-    // Tambah atau Edit Jadwal
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const ruangan = document.getElementById("ruangan").value;
-      const matkul = document.getElementById("matkul").value;
-      const jamMasuk = document.getElementById("jamMasuk").value;
-      const jamKeluar = document.getElementById("jamKeluar").value;
-
-      if (editRow) {
-        editRow.cells[1].textContent = ruangan;
-        editRow.cells[2].textContent = matkul;
-        editRow.cells[3].textContent = jamMasuk;
-        editRow.cells[4].textContent = jamKeluar;
-        editRow = null;
-      } else {
-        const newRow = tableBody.insertRow();
-        newRow.innerHTML = `
-          <td>${tableBody.rows.length}.</td>
-          <td>${ruangan}</td>
-          <td>${matkul}</td>
-          <td>${jamMasuk}</td>
-          <td>${jamKeluar}</td>
-          <td class="action-icons">
-            <i class="fa-solid fa-pen-to-square edit-btn"></i>
-            <i class="fa-solid fa-circle-xmark delete-btn"></i>
-          </td>`;
-      }
-
-      form.reset();
-      const modalInstance = mdb.Modal.getInstance(document.getElementById("jadwalModal"));
-      modalInstance.hide();
-      updateEventListeners();
+    // Inisialisasi saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+      loadRuangan();
+      loadJadwal();
+      modalInstance = new mdb.Modal(jadwalModal);
     });
 
-    // Fungsi Edit & Hapus
-    function updateEventListeners() {
-      document.querySelectorAll(".edit-btn").forEach(btn => {
-        btn.onclick = function () {
-          const row = this.closest("tr");
-          editRow = row;
-          document.getElementById("ruangan").value = row.cells[1].textContent;
-          document.getElementById("matkul").value = row.cells[2].textContent;
-          document.getElementById("jamMasuk").value = row.cells[3].textContent;
-          document.getElementById("jamKeluar").value = row.cells[4].textContent;
+    // Load daftar ruangan untuk dropdown
+    async function loadRuangan() {
+      try {
+        const response = await fetch(`${API_URL}?action=ruangan`);
+        const result = await response.json();
+
+        if (result.success) {
+          const select = document.getElementById('ruangan');
+          select.innerHTML = '<option value="">Pilih Ruangan</option>';
+
+          result.data.forEach(ruangan => {
+            select.innerHTML += `<option value="${ruangan.id_ruangan}">${ruangan.nama_ruangan}</option>`;
+          });
+        }
+      } catch (error) {
+        console.error('Error loading ruangan:', error);
+        showAlert('Gagal memuat data ruangan', 'danger');
+      }
+    }
+
+    // Load semua jadwal
+    async function loadJadwal() {
+      try {
+        const response = await fetch(`${API_URL}?action=list`);
+        const result = await response.json();
+
+        if (result.success) {
+          displayJadwal(result.data);
+        } else {
+          tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">${result.message}</td></tr>`;
+        }
+      } catch (error) {
+        console.error('Error loading jadwal:', error);
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Gagal memuat data</td></tr>';
+      }
+    }
+
+    // Tampilkan jadwal ke tabel
+    function displayJadwal(jadwalList) {
+      if (jadwalList.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada jadwal</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = '';
+      jadwalList.forEach((jadwal, index) => {
+        const row = tableBody.insertRow();
+        row.innerHTML = `
+          <td>${index + 1}.</td>
+          <td>${jadwal.nama_ruangan}</td>
+          <td>${jadwal.mata_kuliah}</td>
+          <td>${jadwal.jam_masuk}</td>
+          <td>${jadwal.jam_keluar}</td>
+          <td class="action-icons">
+            <i class="fa-solid fa-pen-to-square edit-btn" onclick="editJadwal(${jadwal.id_jadwal})"></i>
+            <i class="fa-solid fa-circle-xmark delete-btn" onclick="deleteJadwal(${jadwal.id_jadwal})"></i>
+          </td>
+        `;
+      });
+    }
+
+    // Submit form (tambah atau edit)
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const jadwalId = document.getElementById('jadwalId').value;
+      const data = {
+        id_ruangan: document.getElementById('ruangan').value,
+        mata_kuliah: document.getElementById('matkul').value,
+        jam_masuk: document.getElementById('jamMasuk').value,
+        jam_keluar: document.getElementById('jamKeluar').value
+      };
+
+      try {
+        let url = `${API_URL}?action=create`;
+        let method = 'POST';
+
+        if (jadwalId) {
+          url = `${API_URL}?action=update&id=${jadwalId}`;
+          method = 'PUT';
+        }
+
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showAlert(result.message, 'success');
+          modalInstance.hide();
+          loadJadwal();
+          form.reset();
+        } else {
+          showAlert(result.message, 'danger');
+        }
+      } catch (error) {
+        console.error('Error saving jadwal:', error);
+        showAlert('Gagal menyimpan data', 'danger');
+      }
+    });
+
+    // Edit jadwal
+    async function editJadwal(id) {
+      try {
+        const response = await fetch(`${API_URL}?action=detail&id=${id}`);
+        const result = await response.json();
+
+        if (result.success) {
+          const jadwal = result.data;
+          document.getElementById('jadwalId').value = jadwal.id_jadwal;
+          document.getElementById('ruangan').value = jadwal.id_ruangan;
+          document.getElementById('matkul').value = jadwal.mata_kuliah;
+          document.getElementById('jamMasuk').value = jadwal.jam_masuk;
+          document.getElementById('jamKeluar').value = jadwal.jam_keluar;
           modalTitle.textContent = "Edit Jadwal";
-          const modal = new mdb.Modal(document.getElementById("jadwalModal"));
-          modal.show();
-        };
-      });
 
-      document.querySelectorAll(".delete-btn").forEach(btn => {
-        btn.onclick = function () {
-          const row = this.closest("tr");
-          row.remove();
-          renumberRows();
-        };
-      });
+          modalInstance.show();
+        }
+      } catch (error) {
+        console.error('Error loading jadwal detail:', error);
+        showAlert('Gagal memuat data jadwal', 'danger');
+      }
     }
 
-    function renumberRows() {
-      [...tableBody.rows].forEach((row, i) => {
-        row.cells[0].textContent = `${i + 1}.`;
-      });
+    // Hapus jadwal
+    async function deleteJadwal(id) {
+      if (!confirm('Yakin ingin menghapus jadwal ini?')) return;
+
+      try {
+        const response = await fetch(`${API_URL}?action=delete&id=${id}`, {
+          method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showAlert(result.message, 'success');
+          loadJadwal();
+        } else {
+          showAlert(result.message, 'danger');
+        }
+      } catch (error) {
+        console.error('Error deleting jadwal:', error);
+        showAlert('Gagal menghapus data', 'danger');
+      }
     }
 
-    updateEventListeners();
+    // Reset form
+    function resetForm() {
+      form.reset();
+      document.getElementById('jadwalId').value = '';
+      modalTitle.textContent = "Tambah Jadwal";
+    }
+
+    // Show alert notification
+    function showAlert(message, type) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+      alertDiv.style.zIndex = '9999';
+      alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-mdb-dismiss="alert"></button>
+      `;
+      document.body.appendChild(alertDiv);
+
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 3000);
+    }
   </script>
 </body>
 
