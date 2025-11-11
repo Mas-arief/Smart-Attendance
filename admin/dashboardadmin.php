@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../login.php");
+    exit;
+}
 include '../koneksi.php';
 
 // Hitung total data
@@ -7,6 +11,7 @@ $total_mahasiswa = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS to
 $total_dosen = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM dosen"))['total'];
 $total_ruangan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM ruangan"))['total'];
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">

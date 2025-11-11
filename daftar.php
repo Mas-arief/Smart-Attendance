@@ -5,146 +5,284 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registrasi - Polibatam</title>
-  <!-- ... (link CSS dan Font sama seperti sebelumnya) ... -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <title>Registrasi | Polibatam</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.min.css" rel="stylesheet" />
   <style>
-    /* ... (style sama seperti sebelumnya) ... */
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #3B4BAF;
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: "Poppins", sans-serif;
     }
 
-    .card {
-      border-radius: 20px;
-      background-color: #ffffff;
-      color: #333;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    body {
+      background: linear-gradient(135deg, #a3d8ff, #c2e9fb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      position: relative;
     }
 
-    .card-body {
-      padding: 2.5rem;
+    /* Tombol toggle */
+    .toggle-mode {
+      position: fixed;
+      top: 20px;
+      right: 25px;
+      background: #ffffff;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      font-size: 20px;
+      color: #f5c542;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: 0.3s;
     }
 
-    img {
+    .toggle-mode:hover {
+      transform: scale(1.1);
+    }
+
+    /* Container card - PADDING VERTICAL DIKURANGI LAGI */
+    .container {
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      width: 450px;
+      /* Padding vertikal (atas/bawah) dikurangi lagi */
+      padding: 20px 35px;
+      text-align: center;
+    }
+
+    .container img {
       width: 80px;
-      margin-bottom: 15px;
+      margin-bottom: 5px;
     }
 
-    h4 {
+    h2 {
+      color: #2e5aac;
       font-weight: 600;
-      color: #3B4BAF;
-      margin-bottom: 30px;
+      /* Margin dikurangi lagi */
+      margin-bottom: 15px;
+      font-size: 1.5rem;
     }
 
-    .form-outline input {
-      border-radius: 10px;
-      background-color: #f9f9f9;
+    .form-group {
+      text-align: left;
+      /* Jarak antar grup form dikurangi lagi */
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: #444;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cfd8dc;
+      /* Border-radius petak */
+      border-radius: 4px;
+      font-size: 0.9rem;
+      outline: none;
+      background-color: #f9fbff;
+      transition: all 0.3s ease;
+      height: 40px;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #3b77ff;
+      box-shadow: 0 0 0 3px rgba(59, 119, 255, 0.15);
+      background-color: #ffffff;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 30px;
+      cursor: pointer;
+      color: #3b77ff;
+      font-size: 16px;
     }
 
     .btn-register {
-      background-color: #3B4BAF;
-      color: white;
-      font-weight: 500;
-      border-radius: 10px;
       width: 100%;
+      background: linear-gradient(90deg, #69a8ff, #3b77ff);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      /* Border-radius petak */
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 5px;
       transition: 0.3s;
     }
 
     .btn-register:hover {
-      background-color: #2f3d8f;
+      background: linear-gradient(90deg, #3b77ff, #69a8ff);
     }
 
-    .login-link {
-      color: #3B4BAF;
-      font-size: 0.9rem;
+    .alert {
+      background-color: #ffe3e3;
+      color: #c0392b;
+      border: 1px solid #e0a6a6;
+      /* Border-radius petak */
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 0.8rem;
+      color: #555;
+      /* Margin dikurangi lagi */
+      margin-top: 10px;
+    }
+
+    a {
+      color: #3b77ff;
       text-decoration: none;
+      font-weight: 500;
     }
 
-    .login-link:hover {
+    a:hover {
       text-decoration: underline;
     }
 
-    .register-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px 0;
+    footer {
+      margin-top: 15px;
+      /* Margin dikurangi lagi */
+      font-size: 0.75rem;
+      color: #777;
     }
 
-    .small-text {
-      color: #666;
-      font-size: 0.85rem;
-      margin-top: 15px;
+    /* DARK MODE - Penyesuaian minor untuk konsistensi */
+    body.dark {
+      background: linear-gradient(135deg, #1b1d3b, #243163);
+    }
+
+    body.dark .container {
+      background: #222b50;
+      color: #eaeaea;
+    }
+
+    body.dark h2 {
+      color: #a7c7ff;
+    }
+
+    body.dark label {
+      color: #ccc;
+    }
+
+    body.dark input,
+    body.dark select {
+      background-color: #303b66;
+      border: 1px solid #47538a;
+      color: #fff;
+    }
+
+    body.dark .btn-register {
+      background: linear-gradient(90deg, #5285f4, #2c53ff);
+    }
+
+    body.dark .toggle-password {
+      color: #a7c7ff;
     }
   </style>
 </head>
 
 <body>
-  <section class="register-container">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-11 col-md-8 col-lg-5">
-          <div class="card">
-            <div class="card-body text-center">
-              <img src="rkm/image/poltek.png" alt="Logo Polibatam">
-              <h4>Registrasi</h4>
+  <button class="toggle-mode" id="toggleMode" title="Ganti Mode">🌙</button>
 
-              <!-- Tampilkan Pesan Error atau Sukses -->
-              <?php if (isset($_SESSION['error'])): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                  <?php echo $_SESSION['error'];
-                  unset($_SESSION['error']); ?>
-                  <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
-                </div>
-              <?php endif; ?>
+  <div class="container">
+    <img src="image/poltek.png" alt="Logo Polibatam" />
+    <h2>Registrasi Akun</h2>
 
-              <form action="proses_daftar.php" method="POST">
-                <div class="form-outline mb-4">
-                  <select class="form-select form-select-lg" id="role" name="role" required>
-                    <option value="" selected disabled>Pilih Sebagai</option>
-                    <option value="dosen">Dosen</option>
-                    <option value="mahasiswa">Mahasiswa</option>
-                  </select>
-                  <label class="form-label" for="role">Daftar Sebagai</label>
-                </div>
-
-                <div class="form-outline mb-4">
-                  <input type="text" id="nik_nim" name="nik_nim" class="form-control form-control-lg" required />
-                  <label class="form-label" for="nik_nim">NIK / NIM</label>
-                </div>
-
-                <div class="form-outline mb-4">
-                  <input type="password" id="password" name="password" class="form-control form-control-lg" required />
-                  <label class="form-label" for="password">Password</label>
-                </div>
-
-                <div class="form-outline mb-4">
-                  <input type="password" id="confirmPassword" name="confirm_password" class="form-control form-control-lg" required />
-                  <label class="form-label" for="confirmPassword">Konfirmasi Password</label>
-                </div>
-
-                <button type="submit" class="btn btn-register btn-lg">Daftar</button>
-
-                <p class="mt-3 mb-0">
-                  Sudah punya akun? <a href="login.php" class="login-link">Login di sini</a>
-                </p>
-              </form>
-
-              <p class="small-text mt-4">&copy; 2025 Polibatam | Sistem Absensi Otomatis</p>
-            </div>
-          </div>
-        </div>
+    <?php if (isset($_SESSION['error'])): ?>
+      <div class="alert">
+        <?php echo $_SESSION['error'];
+        unset($_SESSION['error']); ?>
       </div>
-    </div>
-  </section>
+    <?php endif; ?>
 
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.umd.min.js"></script>
+    <form action="proses_daftar.php" method="POST">
+      <div class="form-group">
+        <label for="nik_nim">NIK / NIM</label>
+        <input type="text" id="nik_nim" name="nik_nim" placeholder="Masukkan NIK atau NIM..." required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Masukkan password..." required />
+        <span class="toggle-password" id="togglePassword">👁️</span>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm_password">Konfirmasi Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password..." required />
+        <span class="toggle-password" id="toggleConfirmPassword">👁️</span>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Daftar Sebagai</label>
+        <select id="role" name="role" required>
+          <option value="" disabled selected>Pilih peran...</option>
+          <option value="dosen">Dosen</option>
+          <option value="mahasiswa">Mahasiswa</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-register">DAFTAR</button>
+    </form>
+
+    <p>Sudah punya akun? <a href="login.php">Login di sini</a></p>
+
+    <footer>&copy; 2025 Polibatam | Sistem Absensi Otomatis</footer>
+  </div>
+
+  <script>
+    // Toggle Dark Mode
+    const toggle = document.getElementById('toggleMode');
+    const body = document.body;
+
+    // Cek dan terapkan preferensi mode
+    if (localStorage.getItem('darkMode') === 'true') {
+      body.classList.add('dark');
+      toggle.textContent = '☀️';
+    }
+
+    toggle.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      toggle.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+      localStorage.setItem('darkMode', body.classList.contains('dark'));
+    });
+
+    // Toggle Password Visibility (Password)
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    togglePassword.addEventListener('click', () => {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+    });
+
+    // Toggle Password Visibility (Konfirmasi Password)
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const confirmPassword = document.getElementById('confirm_password');
+    toggleConfirmPassword.addEventListener('click', () => {
+      const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmPassword.setAttribute('type', type);
+    });
+  </script>
 </body>
 
 </html>

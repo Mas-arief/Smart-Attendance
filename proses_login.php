@@ -2,37 +2,44 @@
 session_start();
 include 'koneksi.php';
 
-$username = $_POST['username'];
-$password = $_POST['password'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $password = $_POST['password'];
 
-// Cek user di database
-$sql = "SELECT * FROM users WHERE username = '$username'";
-$result = mysqli_query($conn, $sql);
+    $query = "SELECT * FROM users WHERE username = '$username' AND is_active = 1 LIMIT 1";
+    $result = mysqli_query($conn, $query);
 
-if (mysqli_num_rows($result) === 1) {
-    $user = mysqli_fetch_assoc($result);
+    if ($result && mysqli_num_rows($result) === 1) {
+        $user = mysqli_fetch_assoc($result);
 
-    // Jika password cocok
-    if (password_verify($password, $user['password'])) {
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role']     = $user['role'];
-        $_SESSION['nama']     = $user['nama_lengkap'];
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['id_user']  = $user['id_user'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['nama']     = $user['nama_lengkap'];
+            $_SESSION['role']     = $user['role'];
 
-        // Redirect sesuai role
-        switch ($user['role']) {
-            case 'admin':
+            if ($user['role'] === 'admin') {
                 header("Location: admin/dashboardadmin.php");
                 exit;
-            case 'dosen':
+            } elseif ($user['role'] === 'dosen') {
                 header("Location: dosen/dashboard.php");
                 exit;
-            case 'mahasiswa':
+            } elseif ($user['role'] === 'mahasiswa') {
                 header("Location: mahasiswa/dashboard.php");
                 exit;
+            } else {
+                $_SESSION['error'] = "Role tidak dikenali!";
+            }
+        } else {
+            $_SESSION['error'] = "Password salah!";
         }
     } else {
-        echo "<script>alert('Password salah!'); window.location='login.php';</script>";
+        $_SESSION['error'] = "Username tidak ditemukan atau akun nonaktif!";
     }
+
+    header("Location: login.php");
+    exit;
 } else {
-    echo "<script>alert('Username tidak ditemukan!'); window.location='login.php';</script>";
+    header("Location: login.php");
+    exit;
 }

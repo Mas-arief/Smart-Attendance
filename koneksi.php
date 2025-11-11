@@ -1,11 +1,13 @@
 <?php
 $host = "localhost";
-$user = "root"; // Ganti dengan username DB Anda
-$pass = "";     // Ganti dengan password DB Anda
-$db   = "sistem_absensi";
+$user = "root";
+$pass = "";
+$dbname = "sistem_absensi";
 
-$conn = new mysqli($host, $user, $pass, $db);
+$conn = mysqli_connect($host, $user, $pass, $dbname);
 
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
+if (!$conn) {
+    die("Koneksi gagal: " . mysqli_connect_error());
 }
+
+mysqli_set_charset($conn, "utf8");
