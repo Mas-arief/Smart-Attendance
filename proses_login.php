@@ -2,37 +2,63 @@
 session_start();
 include 'koneksi.php';
 
-$username = $_POST['username'];
-$password = $_POST['password'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-// Cek user di database
-$sql = "SELECT * FROM users WHERE username = '$username'";
-$result = mysqli_query($conn, $sql);
+    // Validasi input
+    if (empty($username) || empty($password)) {
+        $_SESSION['error'] = "Username dan password harus diisi.";
+        header("Location: login.php");
+        exit();
+    }
 
-if (mysqli_num_rows($result) === 1) {
-    $user = mysqli_fetch_assoc($result);
+    // Cek user di database menggunakan prepared statement (lebih aman)
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    // Jika password cocok
-    if (password_verify($password, $user['password'])) {
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role']     = $user['role'];
-        $_SESSION['nama']     = $user['nama_lengkap'];
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
 
-        // Redirect sesuai role
-        switch ($user['role']) {
-            case 'admin':
-                header("Location: admin/dashboardadmin.php");
-                exit;
-            case 'dosen':
-                header("Location: dosen/dashboard.php");
-                exit;
-            case 'mahasiswa':
-                header("Location: mahasiswa/dashboard.php");
-                exit;
+        // Verifikasi password
+        if (password_verify($password, $user['password'])) {
+            // Simpan data ke session
+            $_SESSION['user_id'] = $user['id_user'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['nama'] = isset($user['nama_lengkap']) ? $user['nama_lengkap'] : $username;
+
+            // Redirect sesuai role
+            switch ($user['role']) {
+                case 'admin':
+                    header("Location: admin/dashboardadmin.php");
+                    exit();
+                case 'dosen':
+                    header("Location: dosen/dashboard.php");
+                    exit();
+                case 'mahasiswa':
+                    header("Location: mahasiswa/dashboard.php");
+                    exit();
+                default:
+                    $_SESSION['error'] = "Role tidak dikenali.";
+                    header("Location: login.php");
+                    exit();
+            }
+        } else {
+            $_SESSION['error'] = "Password salah.";
+            header("Location: login.php");
+            exit();
         }
     } else {
-        echo "<script>alert('Password salah!'); window.location='login.php';</script>";
+        $_SESSION['error'] = "Username tidak ditemukan.";
+        header("Location: login.php");
+        exit();
     }
+
+    $stmt->close();
 } else {
-    echo "<script>alert('Username tidak ditemukan!'); window.location='login.php';</script>";
+    header("Location: login.php");
+    exit();
 }
