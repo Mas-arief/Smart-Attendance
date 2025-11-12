@@ -1,20 +1,43 @@
 <?php
-require '../koneksi.php';
+header('Content-Type: application/json');
+require_once '../koneksi.php';
 
-$result = mysqli_query($conn, "SELECT * FROM ruangan ORDER BY id_ruangan DESC");
-$no = 1;
+$method = $_SERVER['REQUEST_METHOD'];
+$action = $_GET['action'] ?? '';
 
-while ($row = mysqli_fetch_assoc($result)) {
-    echo "
-    <tr>
-        <td>{$no}</td>
-        <td>{$row['nama_ruangan']}</td>
-        <td>
-            <button onclick='hapusRuangan({$row['id_ruangan']})' 
-                class='btn btn-danger btn-sm'>
-                <i class='fa-solid fa-trash'></i>
-            </button>
-        </td>
-    </tr>";
-    $no++;
+function sendResponse($success, $message, $data = null)
+{
+    echo json_encode(['success' => $success, 'message' => $message, 'data' => $data]);
+    exit;
+}
+
+try {
+    switch ($method) {
+        case 'GET':
+            $stmt = $conn->prepare("SELECT * FROM ruangan ORDER BY id_ruangan DESC");
+            $stmt->execute();
+            sendResponse(true, 'Data ruangan diambil', $stmt->fetchAll(PDO::FETCH_ASSOC));
+            break;
+
+        case 'POST':
+            $data = json_decode(file_get_contents('php://input'), true);
+            if (empty($data['nama_ruangan'])) sendResponse(false, 'Nama ruangan wajib diisi');
+
+            $stmt = $conn->prepare("INSERT INTO ruangan (nama_ruangan) VALUES (?)");
+            $stmt->execute([$data['nama_ruangan']]);
+            sendResponse(true, 'Ruangan berhasil ditambahkan');
+            break;
+
+        case 'DELETE':
+            if (!isset($_GET['id'])) sendResponse(false, 'ID ruangan tidak ditemukan');
+            $stmt = $conn->prepare("DELETE FROM ruangan WHERE id_ruangan = ?");
+            $stmt->execute([$_GET['id']]);
+            sendResponse(true, 'Ruangan berhasil dihapus');
+            break;
+
+        default:
+            sendResponse(false, 'Method tidak diizinkan');
+    }
+} catch (PDOException $e) {
+    sendResponse(false, 'Database error: ' . $e->getMessage());
 }

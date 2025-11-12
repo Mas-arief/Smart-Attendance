@@ -1,36 +1,58 @@
 <?php
 include '../koneksi.php';
 
-$nip = $_POST['nip'];
-$nama = $_POST['nama'];
-$email = $_POST['email'];
-$jurusan = $_POST['jurusan'];
+// Pastikan request berasal dari form POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-// Cek apakah NIP sudah ada
-$cek = $conn->prepare("SELECT id_dosen FROM dosen WHERE nip = ?");
-$cek->bind_param("s", $nip);
-$cek->execute();
-$cek->store_result();
+    // Ambil data dari form
+    $nik = isset($_POST['nik']) ? trim($_POST['nik']) : '';
+    $nama_dosen = isset($_POST['nama_dosen']) ? trim($_POST['nama_dosen']) : '';
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $jurusan = isset($_POST['jurusan']) ? trim($_POST['jurusan']) : '';
 
-if ($cek->num_rows > 0) {
-    echo "<script>
-        alert('NIP sudah terdaftar!');
-        window.history.back();
-    </script>";
-    exit;
-}
-$cek->close();
+    // Validasi data wajib diisi
+    if (empty($nik) || empty($nama_dosen) || empty($email) || empty($jurusan)) {
+        echo "<script>
+            alert('Semua field harus diisi!');
+            window.history.back();
+        </script>";
+        exit;
+    }
 
-// Tambah data baru
-$stmt = $conn->prepare("INSERT INTO dosen (nip, nama, email, jurusan) VALUES (?, ?, ?, ?)");
-$stmt->bind_param("ssss", $nip, $nama, $email, $jurusan);
+    // Cek apakah NIK sudah terdaftar
+    $cek = $conn->prepare("SELECT id_dosen FROM dosen WHERE nik = ?");
+    $cek->bind_param("s", $nik);
+    $cek->execute();
+    $cek->store_result();
 
-if ($stmt->execute()) {
+    if ($cek->num_rows > 0) {
+        echo "<script>
+            alert('NIK sudah terdaftar!');
+            window.history.back();
+        </script>";
+        $cek->close();
+        $conn->close();
+        exit;
+    }
+    $cek->close();
+
+    // Tambahkan data baru
+    $stmt = $conn->prepare("INSERT INTO dosen (nik, nama_dosen, email, jurusan) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $nik, $nama_dosen, $email, $jurusan);
+
+    if ($stmt->execute()) {
+        echo "<script>
+            alert('Data dosen berhasil ditambahkan!');
+            window.location.href = 'datadosen.php';
+        </script>";
+    } else {
+        echo "Terjadi kesalahan: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
+} else {
+    // Jika bukan dari POST, arahkan kembali ke halaman data dosen
     header("Location: datadosen.php");
     exit;
-} else {
-    echo "Terjadi kesalahan: " . $stmt->error;
 }
-
-$stmt->close();
-$conn->close();

@@ -45,13 +45,12 @@
       transform: scale(1.1);
     }
 
-    /* Container card - PADDING VERTICAL DIKURANGI LAGI */
+    /* Container card */
     .container {
       background: #ffffff;
       border-radius: 8px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
       width: 450px;
-      /* Padding vertikal (atas/bawah) dikurangi lagi */
       padding: 20px 35px;
       text-align: center;
     }
@@ -64,14 +63,12 @@
     h2 {
       color: #2e5aac;
       font-weight: 600;
-      /* Margin dikurangi lagi */
       margin-bottom: 15px;
       font-size: 1.5rem;
     }
 
     .form-group {
       text-align: left;
-      /* Jarak antar grup form dikurangi lagi */
       margin-bottom: 10px;
       position: relative;
     }
@@ -88,7 +85,6 @@
       width: 100%;
       padding: 10px 12px;
       border: 1px solid #cfd8dc;
-      /* Border-radius petak */
       border-radius: 4px;
       font-size: 0.9rem;
       outline: none;
@@ -119,7 +115,6 @@
       color: #fff;
       border: none;
       padding: 10px;
-      /* Border-radius petak */
       border-radius: 4px;
       cursor: pointer;
       font-weight: 500;
@@ -131,21 +126,32 @@
       background: linear-gradient(90deg, #3b77ff, #69a8ff);
     }
 
+    /* Gaya untuk pesan notifikasi */
     .alert {
-      background-color: #ffe3e3;
-      color: #c0392b;
-      border: 1px solid #e0a6a6;
-      /* Border-radius petak */
       border-radius: 4px;
       padding: 8px;
       font-size: 0.85rem;
       margin-bottom: 10px;
+      border: 1px solid transparent;
+    }
+
+    /* Gaya untuk pesan error */
+    .alert-error {
+      background-color: #ffe3e3;
+      color: #c0392b;
+      border-color: #e0a6a6;
+    }
+
+    /* Gaya untuk pesan sukses */
+    .alert-success {
+      background-color: #e3ffe3;
+      color: #2b9e3a;
+      border-color: #a6e0a6;
     }
 
     p {
       font-size: 0.8rem;
       color: #555;
-      /* Margin dikurangi lagi */
       margin-top: 10px;
     }
 
@@ -161,12 +167,11 @@
 
     footer {
       margin-top: 15px;
-      /* Margin dikurangi lagi */
       font-size: 0.75rem;
       color: #777;
     }
 
-    /* DARK MODE - Penyesuaian minor untuk konsistensi */
+    /* DARK MODE */
     body.dark {
       background: linear-gradient(135deg, #1b1d3b, #243163);
     }
@@ -198,6 +203,19 @@
     body.dark .toggle-password {
       color: #a7c7ff;
     }
+
+    /* Dark mode alert styles */
+    body.dark .alert-error {
+      background-color: #4a1e1e;
+      color: #ffbaba;
+      border-color: #6a3434;
+    }
+
+    body.dark .alert-success {
+      background-color: #1e4a1e;
+      color: #baffba;
+      border-color: #346a34;
+    }
   </style>
 </head>
 
@@ -209,9 +227,14 @@
     <h2>Registrasi Akun</h2>
 
     <?php if (isset($_SESSION['error'])): ?>
-      <div class="alert">
+      <div class="alert alert-error">
         <?php echo $_SESSION['error'];
         unset($_SESSION['error']); ?>
+      </div>
+    <?php elseif (isset($_SESSION['success'])): ?>
+      <div class="alert alert-success">
+        <?php echo $_SESSION['success'];
+        unset($_SESSION['success']); ?>
       </div>
     <?php endif; ?>
 
@@ -229,7 +252,8 @@
 
       <div class="form-group">
         <label for="confirm_password">Konfirmasi Password</label>
-        <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password..." required />
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password..."
+          required />
         <span class="toggle-password" id="toggleConfirmPassword">👁️</span>
       </div>
 
