@@ -22,130 +22,76 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0E2F80;
             margin: 0;
             padding: 20px;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 700px;
             margin: 0 auto;
             background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 30px;
         }
 
         /* Header Section */
         .header-section {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
             border-bottom: 2px solid #f0f0f0;
         }
 
         .header-section h1 {
             color: #2c3e50;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 600;
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .header-section .subtitle {
             color: #7f8c8d;
-            font-size: 15px;
+            font-size: 14px;
             margin: 0;
-        }
-
-        /* Progress Steps */
-        .progress-steps {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 35px;
-            position: relative;
-        }
-
-        .progress-steps::before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 10%;
-            right: 10%;
-            height: 3px;
-            background: #e0e0e0;
-            z-index: 0;
-        }
-
-        .step {
-            flex: 1;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .step-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #e0e0e0;
-            color: #95a5a6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .step.active .step-circle {
-            background: #667eea;
-            color: white;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .step.completed .step-circle {
-            background: #10b981;
-            color: white;
-        }
-
-        .step-label {
-            font-size: 13px;
-            color: #7f8c8d;
-            font-weight: 500;
-        }
-
-        .step.active .step-label {
-            color: #2c3e50;
-            font-weight: 600;
         }
 
         /* Camera Section */
         .camera-section {
             background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
         .camera-wrapper {
             position: relative;
-            max-width: 640px;
+            max-width: 500px;
             margin: 0 auto;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
             background: #000;
         }
 
-        video, canvas {
+        video {
             width: 100%;
             height: auto;
             display: block;
-            border-radius: 12px;
+            border-radius: 10px;
+            transform: scaleX(-1);
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
         }
 
         #preview {
@@ -158,9 +104,9 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 280px;
-            height: 350px;
-            border: 3px dashed rgba(102, 126, 234, 0.6);
+            width: 240px;
+            height: 300px;
+            border: 3px dashed rgba(14, 47, 128, 0.6);
             border-radius: 50%;
             pointer-events: none;
             display: none;
@@ -179,10 +125,10 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
         /* Status Messages */
         .status-message {
             text-align: center;
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-radius: 8px;
-            margin: 15px 0;
-            font-size: 14px;
+            margin: 12px 0;
+            font-size: 13px;
             font-weight: 500;
             display: none;
         }
@@ -209,24 +155,24 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
         /* Buttons */
         .action-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-top: 18px;
         }
 
         .btn {
-            padding: 12px 28px;
+            padding: 10px 24px;
             border: none;
-            border-radius: 10px;
-            font-size: 15px;
+            border-radius: 8px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            min-width: 160px;
+            min-width: 140px;
             justify-content: center;
         }
 
@@ -237,13 +183,14 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0E2F80;
             color: white;
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(14, 47, 128, 0.4);
+            background: #0a2460;
         }
 
         .btn-success {
@@ -268,12 +215,12 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
 
         .btn-outline {
             background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
+            color: #0E2F80;
+            border: 2px solid #0E2F80;
         }
 
         .btn-outline:hover:not(:disabled) {
-            background: #667eea;
+            background: #0E2F80;
             color: white;
             transform: translateY(-2px);
         }
@@ -282,15 +229,15 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
         .guidelines {
             background: white;
             border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 25px;
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 20px;
         }
 
         .guidelines h3 {
             color: #2c3e50;
-            font-size: 16px;
-            margin: 0 0 15px 0;
+            font-size: 15px;
+            margin: 0 0 12px 0;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -298,20 +245,20 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
 
         .guidelines ul {
             margin: 0;
-            padding-left: 25px;
+            padding-left: 22px;
             color: #555;
         }
 
         .guidelines li {
-            margin-bottom: 10px;
-            line-height: 1.6;
-            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            font-size: 13px;
         }
 
         /* Navigation */
         .navigation {
-            margin-top: 30px;
-            padding-top: 20px;
+            margin-top: 25px;
+            padding-top: 18px;
             border-top: 2px solid #f0f0f0;
             text-align: center;
         }
@@ -319,20 +266,11 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
         /* Responsive */
         @media (max-width: 768px) {
             .container {
-                padding: 25px 20px;
+                padding: 20px 16px;
             }
 
             .header-section h1 {
-                font-size: 22px;
-            }
-
-            .progress-steps {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .progress-steps::before {
-                display: none;
+                font-size: 20px;
             }
 
             .action-buttons {
@@ -347,13 +285,13 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
         /* Loading Spinner */
         .spinner {
             display: none;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            border-top: 4px solid #0E2F80;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            margin: 15px auto;
         }
 
         @keyframes spin {
@@ -377,22 +315,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
                 Registrasi Wajah Mahasiswa
             </h1>
             <p class="subtitle">Sistem Absensi Berbasis Pengenalan Wajah</p>
-        </div>
-
-        <!-- Progress Steps -->
-        <div class="progress-steps">
-            <div class="step active" id="step1">
-                <div class="step-circle">1</div>
-                <div class="step-label">Aktifkan Kamera</div>
-            </div>
-            <div class="step" id="step2">
-                <div class="step-circle">2</div>
-                <div class="step-label">Ambil Foto</div>
-            </div>
-            <div class="step" id="step3">
-                <div class="step-circle">3</div>
-                <div class="step-label">Konfirmasi</div>
-            </div>
         </div>
 
         <!-- Status Message -->
@@ -432,11 +354,11 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
                 <i class="fas fa-lightbulb"></i> Panduan Registrasi
             </h3>
             <ul>
-                <li><strong>Pencahayaan:</strong> Pastikan ruangan memiliki pencahayaan yang cukup dan wajah Anda tidak terlalu gelap atau terang</li>
-                <li><strong>Posisi Wajah:</strong> Posisikan wajah tepat di tengah kamera dan hadap langsung ke depan</li>
-                <li><strong>Jarak:</strong> Jaga jarak sekitar 30-50 cm dari kamera untuk hasil optimal</li>
-                <li><strong>Aksesoris:</strong> Lepas masker, kacamata hitam, atau topi yang menutupi wajah</li>
-                <li><strong>Ekspresi:</strong> Gunakan ekspresi wajah netral dan pastikan mata terlihat jelas</li>
+                <li><strong>Pencahayaan:</strong> Pastikan ruangan memiliki pencahayaan yang cukup</li>
+                <li><strong>Posisi Wajah:</strong> Posisikan wajah tepat di tengah kamera</li>
+                <li><strong>Jarak:</strong> Jaga jarak sekitar 30-50 cm dari kamera</li>
+                <li><strong>Aksesoris:</strong> Lepas masker, kacamata hitam, atau topi</li>
+                <li><strong>Ekspresi:</strong> Gunakan ekspresi wajah netral</li>
             </ul>
         </div>
 
@@ -469,21 +391,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
             statusMsg.style.display = 'block';
         }
 
-        // Update progress steps
-        function updateStep(stepNumber) {
-            document.querySelectorAll('.step').forEach((step, index) => {
-                if (index < stepNumber - 1) {
-                    step.classList.add('completed');
-                    step.classList.remove('active');
-                } else if (index === stepNumber - 1) {
-                    step.classList.add('active');
-                    step.classList.remove('completed');
-                } else {
-                    step.classList.remove('active', 'completed');
-                }
-            });
-        }
-
         // Start camera
         startBtn.addEventListener('click', async () => {
             try {
@@ -510,7 +417,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
                 
                 loadingSpinner.classList.remove('active');
                 updateStatus('Kamera aktif! Posisikan wajah Anda di dalam area oval dan klik "Ambil Foto"', 'success');
-                updateStep(2);
                 
             } catch (err) {
                 loadingSpinner.classList.remove('active');
@@ -534,7 +440,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
             saveBtn.disabled = false;
             
             updateStatus('Foto berhasil diambil! Periksa hasil foto dan klik "Simpan & Daftar" jika sudah sesuai', 'success');
-            updateStep(3);
         });
 
         // Retake photo
@@ -548,7 +453,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'mahasiswa') {
             saveBtn.disabled = true;
             
             updateStatus('Silakan ambil foto ulang. Posisikan wajah Anda dengan baik', 'info');
-            updateStep(2);
         });
 
         // Save registration
