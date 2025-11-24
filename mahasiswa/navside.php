@@ -276,14 +276,14 @@ if (!$mahasiswa) {
 
     <div class="nav-icons">
       <i class="fa-solid fa-user icon-btn" id="userIcon"></i>
-
       <div class="dropdown-menu-custom" id="userDropdown">
         <a href="ganti_password.php" class="dropdown-item-custom">
           <i class="fas fa-key"></i> Ganti Password
         </a>
+        <a class="dropdown-menu-custom">
+          <i class="fa-solid fa-right-from-bracket icon-btn" id="logoutBtn"></i>Logout
+        </a>  
       </div>
-
-      <i class="fa-solid fa-right-from-bracket icon-btn" id="logoutBtn"></i>
     </div>
   </div>
 
