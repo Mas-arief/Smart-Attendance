@@ -1,3 +1,27 @@
+<?php
+session_start();
+include "../koneksi.php";
+
+// Pastikan user sudah login
+if (!isset($_SESSION['id_user'])) {
+  header("Location: ../login.php");
+  exit;
+}
+
+$id_user = $_SESSION['id_user'];
+
+// Ambil data dosen berdasarkan id_user
+$query = mysqli_query($conn, "SELECT * FROM dosen WHERE id_user='$id_user' LIMIT 1");
+$dosen = mysqli_fetch_assoc($query);
+
+// Jika gagal ambil data
+if (!$dosen) {
+  $dosen = [
+    'nama_dosen' => 'Dosen'
+  ];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -258,7 +282,7 @@
     </div>
 
     <ul class="sidebar-menu">
-      <li><a href="dashboarddosen.php"><i class="fas fa-home"></i><span> Beranda</span></a></li>
+      <li><a href="dashboard.php"><i class="fas fa-home"></i><span> Beranda</span></a></li>
       <hr>
       <li><a href="rekapabsen.php"><i class="fas fa-clipboard-list"></i><span> Rekap Absen</span></a></li>
     </ul>
@@ -269,7 +293,7 @@
     <div class="d-flex align-items-center gap-3">
       <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
       <div>
-        <h4>Selamat Datang, Dosen</h4>
+        <h4>Selamat Datang, <?php echo $dosen['nama_dosen']; ?></h4>
         <p id="datetime"></p>
       </div>
     </div>
@@ -295,9 +319,17 @@
     // Update waktu realtime
     function updateDateTime() {
       const now = new Date();
-      const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+      const options = {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      };
       const date = now.toLocaleDateString('id-ID', options);
-      const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      const time = now.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
       document.getElementById('datetime').textContent = `${date}, ${time}`;
     }
     updateDateTime();

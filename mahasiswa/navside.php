@@ -1,3 +1,27 @@
+<?php
+session_start();
+include "../koneksi.php";
+
+// Pastikan user sudah login
+if (!isset($_SESSION['id_user'])) {
+  header("Location: ../login.php");
+  exit;
+}
+
+$id_user = $_SESSION['id_user'];
+
+// Ambil data mahasiswa
+$query = mysqli_query($conn, "SELECT * FROM mahasiswa WHERE id_user='$id_user' LIMIT 1");
+$mahasiswa = mysqli_fetch_assoc($query);
+
+// Jika gagal ambil data
+if (!$mahasiswa) {
+  $mahasiswa = [
+    'nama_mahasiswa' => 'Mahasiswa'
+  ];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -50,91 +74,81 @@
     .sidebar-header {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
       width: 100%;
       margin-bottom: 30px;
-      transition: all 0.3s ease;
     }
 
     .sidebar-header img {
       height: 45px;
       margin-right: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .sidebar-title h5 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .sidebar-title p {
-      margin: 0;
-      font-size: 12px;
-      color: #dcdcdc;
-      letter-spacing: 0.3px;
     }
 
     .sidebar.collapsed .sidebar-title {
       display: none;
     }
 
+    .sidebar-title h5 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .sidebar-title p {
+      margin: 0;
+      font-size: 12px;
+      color: #dcdcdc;
+    }
+
     .sidebar-menu {
       list-style: none;
       padding: 0;
       width: 100%;
-      transition: all 0.3s ease;
-    }
-
-    .sidebar-menu li {
-      width: 100%;
-      text-align: left;
     }
 
     .sidebar-menu a {
       display: flex;
       align-items: center;
-      color: #ffffff;
-      text-decoration: none;
+      color: white;
       padding: 12px 20px;
+      text-decoration: none;
       font-weight: 500;
-      font-size: 14px;
-      transition: all 0.3s ease;
       border-left: 4px solid transparent;
-      white-space: nowrap;
+      transition: 0.3s;
     }
 
     .sidebar-menu a:hover {
       background-color: rgba(255, 255, 255, 0.15);
-      border-left: 4px solid #ffffff;
+      border-left: 4px solid #fff;
+    }
+
+    .sidebar-menu a span {
+      white-space: nowrap;
     }
 
     .sidebar-menu a i {
-      margin-right: 10px;
+      margin-right: 12px;
       width: 18px;
-      text-align: center;
     }
 
     .sidebar.collapsed a span {
       display: none;
     }
 
-    /* Navbar */
+    /* NAVBAR BARU */
     .navbar {
-      background-color: #ffffff;
       position: fixed;
+      top: 0;
       left: 230px;
       right: 0;
-      top: 0;
-      height: 70px;
+      height: 65px;
+      background: #ffffff;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 30px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 0 25px;
+      gap: 15px;
+      border-bottom: 1px solid #e5e5e5;
       z-index: 900;
-      transition: all 0.3s ease;
+      transition: 0.3s ease;
     }
 
     .navbar.collapsed {
@@ -144,74 +158,94 @@
     .menu-toggle {
       background: none;
       border: none;
-      font-size: 22px;
+      font-size: 24px;
       cursor: pointer;
       color: #0E2F80;
     }
 
-    .navbar h4 {
-      margin: 0;
-      font-weight: 600;
-      font-size: 18px;
-      color: #000;
+    /* Agar nama mahasiswa tidak melebar dan lebih rapat */
+    .navbar-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 1.2;
     }
 
-    .navbar p {
-      font-size: 13px;
+    .navbar-text h4 {
       margin: 0;
-      color: #666;
+      font-size: 19px;
+      font-weight: 700;
+      white-space: nowrap;
+      /* supaya nama tidak turun ke bawah */
     }
 
-    /* Ikon kanan atas */
+    .navbar-text p {
+      margin: 0;
+      font-size: 12.5px;
+      color: #6d6d6d;
+      margin-top: -2px;
+      /* rapetin */
+    }
+
+
+
+    /* Profil Dropdown */
     .nav-icons {
       display: flex;
       align-items: center;
       gap: 20px;
+      position: relative;
     }
 
-    .nav-icons i {
+    .icon-btn {
       font-size: 20px;
+      color: #0E2F80;
       cursor: pointer;
-      transition: color 0.3s ease;
     }
 
-    .nav-icons i:hover {
+    .dropdown-menu-custom {
+      position: absolute;
+      top: 45px;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      min-width: 200px;
+      display: none;
+      overflow: hidden;
+    }
+
+    .dropdown-menu-custom.show {
+      display: block;
+      animation: fadeIn .2s ease;
+    }
+
+    .dropdown-item-custom {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #333;
+      transition: 0.2s;
+    }
+
+    .dropdown-item-custom:hover {
+      background: #eee;
+    }
+
+    .dropdown-item-custom i {
+      margin-right: 12px;
       color: #0E2F80;
-    }
-
-    .logout-icon {
-      color: #0E2F80;
-    }
-
-    .logout-icon:hover {
-      color: #0E2F80;
-    }
-
-    @media (max-width: 991px) {
-      .sidebar {
-        left: -250px;
-      }
-
-      .sidebar.active {
-        left: 0;
-      }
-
-      .navbar {
-        left: 0;
-      }
-
-      .navbar.collapsed {
-        left: 0;
-      }
     }
   </style>
 </head>
 
 <body>
+
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <img src="../image/poli.png" alt="Logo Polibatam">
+      <img src="../image/poli.png">
       <div class="sidebar-title">
         <h5>RKM</h5>
         <p>Rekap Kehadiran Mahasiswa</p>
@@ -219,44 +253,52 @@
     </div>
 
     <ul class="sidebar-menu">
-      <li><a href="dashboard.php"><i class="fas fa-home"></i><span> Beranda</span></a></li>
+      <li><a href="dashboard.php"><i class="fas fa-home"></i> <span>Beranda</span></a></li>
       <hr>
-      <li><a href="registrasiface.php"><i class="fas fa-camera"></i><span> Registrasi Wajah</span></a></li>
+      <li><a href="registrasiface.php"><i class="fas fa-camera"></i> <span>Registrasi Wajah</span></a></li>
       <hr>
-      <li><a href="rekapabsen.php"><i class="fas fa-clipboard-list"></i><span> Rekap Absen</span></a></li>
+      <li><a href="rekapabsen.php"><i class="fas fa-clipboard-list"></i> <span>Rekap Absen</span></a></li>
     </ul>
   </div>
 
   <!-- Navbar -->
   <div class="navbar" id="navbar">
     <div class="d-flex align-items-center gap-3">
-      <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
-      <div>
-        <h4>Selamat Datang, Mahasiswa</h4>
+      <button class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <div class="navbar-text">
+        <h4>Selamat Datang, <?= $mahasiswa['nama_mahasiswa'] ?></h4>
         <p id="datetime"></p>
       </div>
     </div>
 
-    <!-- Ikon profil & logout -->
     <div class="nav-icons">
-      <i class="fa-solid fa-user text-primary" title="Profil"></i>
-      <i class="fa-solid fa-right-from-bracket logout-icon" id="logoutBtn" title="Logout"></i>
+      <i class="fa-solid fa-user icon-btn" id="userIcon"></i>
+
+      <div class="dropdown-menu-custom" id="userDropdown">
+        <a href="ganti_password.php" class="dropdown-item-custom">
+          <i class="fas fa-key"></i> Ganti Password
+        </a>
+      </div>
+
+      <i class="fa-solid fa-right-from-bracket icon-btn" id="logoutBtn"></i>
     </div>
   </div>
 
+
   <!-- Script -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.umd.min.js"></script>
   <script>
-    // Update waktu realtime
+    // Waktu realtime
     function updateDateTime() {
       const now = new Date();
-      const options = {
+      const date = now.toLocaleDateString('id-ID', {
         weekday: 'long',
         day: '2-digit',
         month: 'long',
         year: 'numeric'
-      };
-      const date = now.toLocaleDateString('id-ID', options);
+      });
       const time = now.toLocaleTimeString('id-ID', {
         hour: '2-digit',
         minute: '2-digit'
@@ -266,24 +308,33 @@
     updateDateTime();
     setInterval(updateDateTime, 60000);
 
-    // Sidebar toggle
-    const sidebar = document.getElementById('sidebar');
-    const navbar = document.getElementById('navbar');
-    const toggleBtn = document.getElementById('menu-toggle');
-
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      navbar.classList.toggle('collapsed');
+    // Sidebar Toggle
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+      document.getElementById('navbar').classList.toggle('collapsed');
     });
 
-    // Konfirmasi Logout
+    // Dropdown Profil
+    const userIcon = document.getElementById('userIcon');
+    const dropdown = document.getElementById('userDropdown');
+
+    userIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', () => {
+      dropdown.classList.remove('show');
+    });
+
+    // Logout
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      const confirmLogout = confirm('Apakah Anda yakin ingin keluar dari akun mahasiswa?');
-      if (confirmLogout) {
-        window.location.href = '../login.php';
+      if (confirm("Keluar dari akun mahasiswa?")) {
+        window.location.href = "../logout.php";
       }
     });
   </script>
+
 </body>
 
 </html>

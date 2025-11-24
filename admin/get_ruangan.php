@@ -16,8 +16,6 @@ try {
         case 'GET':
             $stmt = $conn->prepare("SELECT * FROM ruangan ORDER BY id_ruangan DESC");
             $stmt->execute();
-            sendResponse(true, 'Data ruangan diambil', $stmt->fetchAll(PDO::FETCH_ASSOC));
-            break;
 
         case 'POST':
             $data = json_decode(file_get_contents('php://input'), true);
