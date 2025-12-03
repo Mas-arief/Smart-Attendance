@@ -1,45 +1,55 @@
 <?php
-session_start();
+// Cegah session_start() ganda
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
+// Load koneksi
 include "../koneksi.php";
 
-// Pastikan user sudah login
-if (!isset($_SESSION['id_user'])) {
+// Pastikan user login dan role mahasiswa
+if (!isset($_SESSION['username']) || ($_SESSION['role'] ?? '') !== 'mahasiswa') {
   header("Location: ../login.php");
   exit;
 }
 
-$id_user = $_SESSION['id_user'];
+// Ambil id_user
+$id_user = isset($_SESSION['id_user']) ? (int) $_SESSION['id_user'] : 0;
 
 // Ambil data mahasiswa
-$query = mysqli_query($conn, "SELECT * FROM mahasiswa WHERE id_user='$id_user' LIMIT 1");
-$mahasiswa = mysqli_fetch_assoc($query);
+$mahasiswa = null;
+if ($id_user > 0 && isset($conn)) {
+  $sql = "SELECT * FROM mahasiswa WHERE id_user = $id_user LIMIT 1";
+  $res = mysqli_query($conn, $sql);
+  if ($res) {
+    $mahasiswa = mysqli_fetch_assoc($res);
+  }
+}
 
-// Jika gagal ambil data
+// Default fallback
 if (!$mahasiswa) {
-  $mahasiswa = [
-    'nama_mahasiswa' => 'Mahasiswa'
-  ];
+  $mahasiswa = ['nama_mahasiswa' => 'Mahasiswa'];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Mahasiswa - RKM</title>
 
   <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- MDB UI Kit -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.min.css" rel="stylesheet">
 
   <style>
+    /* ================= GLOBAL ================= */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
@@ -56,26 +66,23 @@ if (!$mahasiswa) {
       height: 100vh;
       background-color: #0E2F80;
       color: white;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      padding: 20px;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-      z-index: 999;
-      transition: all 0.3s ease;
+      gap: 10px;
     }
 
     .sidebar.collapsed {
       width: 70px;
-      align-items: center;
       padding: 20px 10px;
+      align-items: center;
     }
 
     .sidebar-header {
       display: flex;
       align-items: center;
-      width: 100%;
-      margin-bottom: 30px;
+      gap: 10px;
+      margin-bottom: 25px;
     }
 
     .sidebar-header img {
@@ -87,109 +94,82 @@ if (!$mahasiswa) {
       display: none;
     }
 
-    .sidebar-title h5 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .sidebar-title p {
-      margin: 0;
-      font-size: 12px;
-      color: #dcdcdc;
-    }
-
     .sidebar-menu {
       list-style: none;
       padding: 0;
       width: 100%;
     }
 
+    .sidebar-menu li {
+      list-style: none;
+    }
+
     .sidebar-menu a {
       display: flex;
       align-items: center;
       color: white;
-      padding: 12px 20px;
       text-decoration: none;
-      font-weight: 500;
-      border-left: 4px solid transparent;
-      transition: 0.3s;
+      padding: 10px 0;
+      font-weight: 600;
+      font-size: 14px;
     }
 
     .sidebar-menu a:hover {
-      background-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.15);
       border-left: 4px solid #fff;
     }
 
-    .sidebar-menu a span {
-      white-space: nowrap;
-    }
-
     .sidebar-menu a i {
-      margin-right: 12px;
-      width: 18px;
+      margin-right: 10px;
+      font-size: 15px;
     }
 
     .sidebar.collapsed a span {
       display: none;
     }
 
-    /* NAVBAR BARU */
+    /* Navbar */
     .navbar {
       position: fixed;
       top: 0;
-      left: 230px;
       right: 0;
-      height: 65px;
-      background: #ffffff;
+      left: 230px;
+      height: 70px;
+      background: #fff;
       display: flex;
       align-items: center;
-      padding: 0 25px;
-      gap: 15px;
-      border-bottom: 1px solid #e5e5e5;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: 0.3s;
       z-index: 900;
-      transition: 0.3s ease;
     }
 
     .navbar.collapsed {
       left: 70px;
     }
 
+    .navbar h4 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .navbar p {
+      margin: 0;
+      font-size: 13px;
+      color: #666;
+    }
+
     .menu-toggle {
-      background: none;
       border: none;
-      font-size: 24px;
+      background: none;
+      font-size: 22px;
       cursor: pointer;
       color: #0E2F80;
     }
 
-    /* Agar nama mahasiswa tidak melebar dan lebih rapat */
-    .navbar-text {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      line-height: 1.2;
-    }
-
-    .navbar-text h4 {
-      margin: 0;
-      font-size: 19px;
-      font-weight: 700;
-      white-space: nowrap;
-      /* supaya nama tidak turun ke bawah */
-    }
-
-    .navbar-text p {
-      margin: 0;
-      font-size: 12.5px;
-      color: #6d6d6d;
-      margin-top: -2px;
-      /* rapetin */
-    }
-
-
-
-    /* Profil Dropdown */
+    /* Navbar Icons */
     .nav-icons {
       display: flex;
       align-items: center;
@@ -199,42 +179,45 @@ if (!$mahasiswa) {
 
     .icon-btn {
       font-size: 20px;
-      color: #0E2F80;
       cursor: pointer;
+      color: #0E2F80;
     }
 
+    /* Dropdown */
     .dropdown-menu-custom {
       position: absolute;
       top: 45px;
       right: 0;
+      min-width: 200px;
       background: white;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      min-width: 200px;
       display: none;
       overflow: hidden;
+      z-index: 2000;
     }
 
     .dropdown-menu-custom.show {
       display: block;
-      animation: fadeIn .2s ease;
     }
 
     .dropdown-item-custom {
-      padding: 12px 20px;
       display: flex;
       align-items: center;
+      padding: 12px 20px;
+      cursor: pointer;
       text-decoration: none;
       color: #333;
-      transition: 0.2s;
     }
 
     .dropdown-item-custom:hover {
-      background: #eee;
+      background: #f0f0f0;
     }
 
     .dropdown-item-custom i {
-      margin-right: 12px;
+      margin-right: 10px;
+      width: 18px;
+      text-align: center;
       color: #0E2F80;
     }
   </style>
@@ -245,86 +228,83 @@ if (!$mahasiswa) {
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <img src="../image/poli.png">
+      <img src="../image/poli.png" alt="Logo" style="height:40px;">
       <div class="sidebar-title">
-        <h5>RKM</h5>
-        <p>Rekap Kehadiran Mahasiswa</p>
+        <h5 style="margin:0; font-size:16px;">RKM</h5>
+        <p style="margin:0; font-size:12px;">Rekap Kehadiran Mahasiswa</p>
       </div>
     </div>
 
     <ul class="sidebar-menu">
-      <li><a href="dashboard.php"><i class="fas fa-home"></i> <span>Beranda</span></a></li>
+      <li><a href="dashboard.php" class="<?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : '' ?>"><i class="fas fa-home"></i><span> Beranda</span></a></li>
       <hr>
-      <li><a href="registrasiface.php"><i class="fas fa-camera"></i> <span>Registrasi Wajah</span></a></li>
+      <li><a href="registrasiface.php" class="<?= basename($_SERVER['PHP_SELF']) == 'registrasiface.php' ? 'active' : '' ?>"><i class="fas fa-camera"></i><span> Registrasi Wajah</span></a></li>
       <hr>
-      <li><a href="rekapabsen.php"><i class="fas fa-clipboard-list"></i> <span>Rekap Absen</span></a></li>
+      <li><a href="rekapabsen.php" class="<?= basename($_SERVER['PHP_SELF']) == 'rekapabsen.php' ? 'active' : '' ?>"><i class="fas fa-clipboard-list"></i><span> Rekap Absen</span></a></li>
     </ul>
   </div>
 
   <!-- Navbar -->
   <div class="navbar" id="navbar">
-    <div class="d-flex align-items-center gap-3">
-      <button class="menu-toggle" id="menu-toggle">
-        <i class="fas fa-bars"></i>
-      </button>
-
-      <div class="navbar-text">
-        <h4>Selamat Datang, <?= $mahasiswa['nama_mahasiswa'] ?></h4>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+      <div>
+        <h4>Selamat Datang, <?= htmlspecialchars($mahasiswa['nama_mahasiswa']); ?></h4>
         <p id="datetime"></p>
       </div>
     </div>
 
     <div class="nav-icons">
       <i class="fa-solid fa-user icon-btn" id="userIcon"></i>
+
       <div class="dropdown-menu-custom" id="userDropdown">
-        <a href="ganti_password.php" class="dropdown-item-custom">
-          <i class="fas fa-key"></i> Ganti Password
-        </a>
-        <a class="dropdown-menu-custom">
-          <i class="fa-solid fa-right-from-bracket icon-btn" id="logoutBtn"></i>Logout
-        </a>  
+        <a href="ganti_password.php" class="dropdown-item-custom"><i class="fas fa-key"></i><span>Ganti Password</span></a>
+        <div class="dropdown-item-custom" id="logoutBtn" style="border-top:1px solid #eee;">
+          <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+        </div>
       </div>
     </div>
   </div>
 
-
-  <!-- Script -->
+  <!-- SCRIPT -->
   <script>
-    // Waktu realtime
+    // Tanggal & Jam
     function updateDateTime() {
       const now = new Date();
-      const date = now.toLocaleDateString('id-ID', {
-        weekday: 'long',
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-      });
-      const time = now.toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-      document.getElementById('datetime').textContent = `${date}, ${time}`;
+      document.getElementById('datetime').textContent =
+        now.toLocaleDateString('id-ID', {
+          weekday: 'long',
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        }) + ", " +
+        now.toLocaleTimeString('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
     }
     updateDateTime();
     setInterval(updateDateTime, 60000);
 
-    // Sidebar Toggle
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const navbar = document.getElementById('navbar');
     document.getElementById('menu-toggle').addEventListener('click', () => {
-      document.getElementById('sidebar').classList.toggle('collapsed');
-      document.getElementById('navbar').classList.toggle('collapsed');
+      sidebar.classList.toggle('collapsed');
+      navbar.classList.toggle('collapsed');
     });
 
-    // Dropdown Profil
+    // Dropdown
     const userIcon = document.getElementById('userIcon');
-    const dropdown = document.getElementById('userDropdown');
+    const userDropdown = document.getElementById('userDropdown');
 
     userIcon.addEventListener('click', (e) => {
       e.stopPropagation();
-      dropdown.classList.toggle('show');
+      userDropdown.classList.toggle('show');
     });
 
     document.addEventListener('click', () => {
-      dropdown.classList.remove('show');
+      userDropdown.classList.remove('show');
     });
 
     // Logout

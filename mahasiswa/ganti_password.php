@@ -129,31 +129,27 @@
             validateMatch();
         });
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Basic validity
-            const minLenOk = newPwd.value.length >= parseInt(newPwd.getAttribute('minlength'));
-            const matchOk = newPwd.value === confirmPwd.value;
+        fetch("proses_ganti_password.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    password: newPwd.value
+                })
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    successAlert.classList.remove('d-none');
 
-            if (!minLenOk) {
-                newPwd.classList.add('is-invalid');
-            }
-            if (!matchOk) {
-                confirmPwd.classList.add('is-invalid');
-                confirmFeedback.textContent = 'Password tidak cocok.';
-            }
-
-            if (minLenOk && matchOk) {
-                // --- Di sini lakukan request ke server (fetch/ajax) untuk ganti password ---
-                // Contoh: fetch('/api/change-password', { method: 'POST', body: JSON.stringify({ password: newPwd.value }) })
-                // Untuk demo, hanya tampilkan pesan sukses.
-                successAlert.classList.remove('d-none');
-                // reset form
-                form.reset();
-                // sembunyikan pesan setelah 3 detik
-                setTimeout(() => successAlert.classList.add('d-none'), 3000);
-            }
-        });
+                    setTimeout(() => {
+                        window.location.href = "login.php?updated=1";
+                    }, 1500);
+                } else {
+                    alert(res.message);
+                }
+            });
     </script>
 </body>
 

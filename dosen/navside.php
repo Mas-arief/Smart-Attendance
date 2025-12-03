@@ -1,16 +1,21 @@
 <?php
-session_start();
+// Pastikan session tidak double
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
+// Load koneksi
 include "../koneksi.php";
 
-// Pastikan user sudah login
-if (!isset($_SESSION['id_user'])) {
+// Cek login + role dosen
+if (!isset($_SESSION['username']) || $_SESSION['role'] != 'dosen') {
   header("Location: ../login.php");
   exit;
 }
 
-$id_user = $_SESSION['id_user'];
+$id_user = $_SESSION['id_user'] ?? 0;
 
-// Ambil data dosen berdasarkan id_user
+// Ambil data dosen
 $query = mysqli_query($conn, "SELECT * FROM dosen WHERE id_user='$id_user' LIMIT 1");
 $dosen = mysqli_fetch_assoc($query);
 
@@ -21,6 +26,7 @@ if (!$dosen) {
   ];
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -302,21 +308,29 @@ if (!$dosen) {
     <div class="nav-icons">
       <div class="user-dropdown">
         <i class="fa-solid fa-user icon-btn" id="userIcon" title="Profil"></i>
+
+        <!-- DROPDOWN FIX -->
         <div class="dropdown-menu-custom" id="userDropdown">
           <a href="ganti_password.php" class="dropdown-item-custom">
             <i class="fas fa-key"></i>
             <span>Ganti Password</span>
           </a>
+
+          <a id="logoutBtn" class="dropdown-item-custom">
+            <i class="fas fa-right-from-bracket"></i>
+            <span>Logout</span>
+          </a>
         </div>
       </div>
-      <i class="fa-solid fa-right-from-bracket icon-btn" id="logoutIcon" title="Logout"></i>
     </div>
   </div>
 
+
   <!-- Script -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.2.0/mdb.umd.min.js"></script>
+  <!-- SCRIPT -->
   <script>
-    // Update waktu realtime
+    // Tampilkan waktu
     function updateDateTime() {
       const now = new Date();
       const options = {
@@ -325,46 +339,43 @@ if (!$dosen) {
         month: 'long',
         year: 'numeric'
       };
-      const date = now.toLocaleDateString('id-ID', options);
       const time = now.toLocaleTimeString('id-ID', {
         hour: '2-digit',
         minute: '2-digit'
       });
-      document.getElementById('datetime').textContent = `${date}, ${time}`;
+      document.getElementById("datetime").textContent =
+        now.toLocaleDateString('id-ID', options) + ", " + time;
     }
     updateDateTime();
     setInterval(updateDateTime, 60000);
 
     // Sidebar toggle
-    const sidebar = document.getElementById('sidebar');
-    const navbar = document.getElementById('navbar');
-    const toggleBtn = document.getElementById('menu-toggle');
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      navbar.classList.toggle('collapsed');
+    document.getElementById("menu-toggle").onclick = () => {
+      document.getElementById("sidebar").classList.toggle("collapsed");
+      document.getElementById("navbar").classList.toggle("collapsed");
+    };
+
+    // Dropdown user
+    const userIcon = document.getElementById("userIcon");
+    const userDropdown = document.getElementById("userDropdown");
+
+    userIcon.addEventListener("click", (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle("show");
     });
 
-    // Dropdown toggle (klik profil)
-    const userIcon = document.getElementById('userIcon');
-    const userDropdown = document.getElementById('userDropdown');
-    userIcon.addEventListener('click', (e) => {
-      e.stopPropagation();
-      userDropdown.classList.toggle('show');
-    });
-    document.addEventListener('click', (e) => {
-      if (!userIcon.contains(e.target) && !userDropdown.contains(e.target)) {
-        userDropdown.classList.remove('show');
-      }
+    document.addEventListener("click", () => {
+      userDropdown.classList.remove("show");
     });
 
     // Logout
-    document.getElementById('logoutIcon').addEventListener('click', () => {
-      const confirmLogout = confirm('Apakah Anda yakin ingin keluar dari akun dosen?');
-      if (confirmLogout) {
-        window.location.href = '../login.php';
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      if (confirm("Keluar dari akun dosen?")) {
+        window.location.href = "../logout.php";
       }
     });
   </script>
+
 </body>
 
 </html>

@@ -191,6 +191,12 @@
     <img src="image/poltek.png" alt="Logo Polibatam" />
     <h2>Login</h2>
 
+    <?php if (isset($_GET['updated'])): ?>
+      <div class="alert alert-success text-center">
+        Password berhasil diperbarui. Silakan login kembali.
+      </div>
+    <?php endif ?>
+
     <?php if (isset($_SESSION['error'])): ?>
       <div class="alert">
         <?php echo $_SESSION['error'];
